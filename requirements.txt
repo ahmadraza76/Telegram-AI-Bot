@@ -1,0 +1,6 @@
+# requirements.txt
+# Developer: G A RAZA
+python-telegram-bot==2.0
+textblob==0.18.0
+langdetect==1.0.9
+requests==2.31.0
