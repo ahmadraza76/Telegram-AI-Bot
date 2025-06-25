@@ -65,4 +65,4 @@ MIT License. See [LICENSE](LICENSE).
 - **UI/UX**: Images, pink glass buttons (✨💗💗), and typing animation.
 
 ## Developer
-Created by **G A RAZA** for xAI.
+Created by **G A RAZA** 
