@@ -1,0 +1,18 @@
+# docker-compose.yml
+# Developer: G A RAZA
+# Docker Compose configuration for Telegram Bot
+
+version: '3.9'
+services:
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
+      - AI_API_KEY=${AI_API_KEY}
+    volumes:
+      - ./bot_log:/app/bot_log
+    restart: unless-stopped
+volumes:
+  bot_log:
