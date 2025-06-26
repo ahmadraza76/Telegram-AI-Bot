@@ -36,8 +36,7 @@ def log_interaction(user_id, command, action):
             log_message = f"User {user_id} used {command}: {action}\n"
             f.write(log_message)
             logger.info(f"Logged interaction: {log_message.strip()}")
-    except:
-        Exception as e:
+    except Exception as e:
         logger.error(f"Failed to log interaction: {e}")
 
 def generate_pdf(content, lang="en"):
