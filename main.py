@@ -4,6 +4,7 @@
 
 import logging
 import asyncio
+import sys
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackQueryHandler
 from config import Config
 from handlers import BotHandlers
@@ -62,20 +63,54 @@ class UstaadAIBot:
             logger.info(f"👨‍💻 Developer: {Config.DEVELOPER}")
             logger.info(f"🤖 Using OpenAI model: {Config.DEFAULT_MODEL}")
             
+            # Initialize application
+            await self.application.initialize()
+            
             # Start polling
-            await self.application.run_polling(
+            await self.application.start()
+            await self.application.updater.start_polling(
                 drop_pending_updates=True,
                 allowed_updates=['message', 'callback_query']
             )
             
+            # Keep the bot running
+            logger.info("🚀 Bot is now running! Press Ctrl+C to stop.")
+            
+            # Run until interrupted
+            try:
+                await asyncio.Event().wait()
+            except KeyboardInterrupt:
+                logger.info("🛑 Received stop signal")
+            
         except Exception as e:
             logger.error(f"Failed to start bot: {e}")
             raise
+        finally:
+            # Cleanup
+            try:
+                await self.application.updater.stop()
+                await self.application.stop()
+                await self.application.shutdown()
+            except Exception as e:
+                logger.error(f"Error during cleanup: {e}")
     
     def run(self):
         """Run the bot"""
         try:
-            asyncio.run(self.start_bot())
+            # Check if event loop is already running
+            try:
+                loop = asyncio.get_running_loop()
+                logger.info("Event loop is already running, creating task")
+                # If we're in an already running loop, create a task
+                task = loop.create_task(self.start_bot())
+                return task
+            except RuntimeError:
+                # No event loop running, create new one
+                logger.info("Creating new event loop")
+                if sys.platform == 'win32':
+                    asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
+                asyncio.run(self.start_bot())
+                
         except KeyboardInterrupt:
             logger.info("Bot stopped by user")
         except Exception as e:
@@ -89,7 +124,7 @@ def main():
         bot.run()
     except Exception as e:
         logger.error(f"Failed to start application: {e}")
-        exit(1)
+        sys.exit(1)
 
 if __name__ == '__main__':
     main()
