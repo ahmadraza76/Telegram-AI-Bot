@@ -1,6 +1,6 @@
 # config.py
-# Developer: G A RAZA
-# Configuration settings for the premium Telegram AI bot
+# Developer: Mr @Mrnick66
+# USTAAD-AI Premium Telegram Bot Configuration
 
 import os
 from dotenv import load_dotenv
@@ -11,7 +11,7 @@ class Config:
     # Bot Configuration
     TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
     OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-    BOT_USERNAME = os.getenv('BOT_USERNAME', 'YourAIBot')
+    BOT_USERNAME = os.getenv('BOT_USERNAME', 'UstaadAIBot')
     ADMIN_USER_ID = int(os.getenv('ADMIN_USER_ID', '0'))
     
     # AI Configuration
@@ -27,12 +27,20 @@ class Config:
     LOGS_DIR = "logs"
     TEMP_DIR = "temp"
     
+    # Branding
+    BOT_NAME = "USTAAD-AI"
+    VERSION = "v2.5.0"
+    DEVELOPER = "Mr @Mrnick66"
+    POWERED_BY = "Powered by USTAAD-AI"
+    
     # UI Configuration
-    BRAND_COLOR = "🌟"
+    BRAND_COLOR = "🎯"
     SUCCESS_EMOJI = "✅"
     ERROR_EMOJI = "❌"
     THINKING_EMOJI = "🤔"
-    AI_EMOJI = "🤖"
+    AI_EMOJI = "🧠"
+    FIRE_EMOJI = "🔥"
+    STAR_EMOJI = "⭐"
     
     @classmethod
     def validate(cls):

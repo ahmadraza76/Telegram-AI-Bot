@@ -1,6 +1,6 @@
 # main.py
-# Developer: G A RAZA
-# Premium ChatGPT-like Telegram Bot - Main Application
+# Developer: Mr @Mrnick66
+# USTAAD-AI Premium Telegram Bot - Main Application
 
 import logging
 import asyncio
@@ -20,7 +20,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-class PremiumAIBot:
+class UstaadAIBot:
     def __init__(self):
         # Validate configuration
         Config.validate()
@@ -39,10 +39,10 @@ class PremiumAIBot:
     
     def _setup_handlers(self):
         """Setup all bot handlers"""
-        # Command handlers
+        # Command handlers - Only 3 commands total
         self.application.add_handler(CommandHandler("start", self.handlers.start_command))
-        self.application.add_handler(CommandHandler("new", self.handlers.new_chat_command))
-        self.application.add_handler(CommandHandler("export", self.handlers.export_command))
+        self.application.add_handler(CommandHandler("help", self.handlers.help_command))
+        self.application.add_handler(CommandHandler("info", self.handlers.info_command))
         
         # Callback query handler for inline buttons
         self.application.add_handler(CallbackQueryHandler(self.handlers.button_callback))
@@ -57,7 +57,9 @@ class PremiumAIBot:
     async def start_bot(self):
         """Start the bot"""
         try:
-            logger.info(f"🚀 Starting Premium AI Bot (@{Config.BOT_USERNAME})")
+            logger.info(f"🎯 Starting {Config.BOT_NAME} {Config.VERSION}")
+            logger.info(f"🧠 {Config.POWERED_BY}")
+            logger.info(f"👨‍💻 Developer: {Config.DEVELOPER}")
             logger.info(f"🤖 Using OpenAI model: {Config.DEFAULT_MODEL}")
             
             # Start polling
@@ -83,7 +85,7 @@ class PremiumAIBot:
 def main():
     """Main function"""
     try:
-        bot = PremiumAIBot()
+        bot = UstaadAIBot()
         bot.run()
     except Exception as e:
         logger.error(f"Failed to start application: {e}")
