@@ -2,7 +2,7 @@
 # Developer: G A RAZA
 # Premium ChatGPT-like Telegram Bot
 
-FROM python:3.11-slim
+FROM python:3.11-slim-bullseye
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
