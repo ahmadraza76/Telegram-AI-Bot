@@ -1,18 +1,37 @@
 # docker-compose.yml
 # Developer: G A RAZA
-# Docker Compose configuration for Telegram Bot
+# Premium ChatGPT-like Telegram Bot
 
 version: '3.9'
+
 services:
-  bot:
+  ai-bot:
     build:
       context: .
       dockerfile: Dockerfile
-    environment:
-      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
-      - AI_API_KEY=${AI_API_KEY}
-    volumes:
-      - ./bot_log:/app/bot_log
+    container_name: premium-ai-bot
     restart: unless-stopped
+    environment:
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - BOT_USERNAME=${BOT_USERNAME}
+      - ADMIN_USER_ID=${ADMIN_USER_ID}
+    volumes:
+      - ./logs:/app/logs
+      - ./temp:/app/temp
+    networks:
+      - bot-network
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('https://api.telegram.org')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  bot-network:
+    driver: bridge
+
 volumes:
-  bot_log:
+  bot-logs:
+  bot-temp:

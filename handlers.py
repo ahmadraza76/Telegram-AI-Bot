@@ -1,223 +1,258 @@
 # handlers.py
 # Developer: G A RAZA
-# Command, message, and callback handlers for the Telegram bot with image integration, typing animation, and pink glass buttons
+# Premium Telegram bot handlers with advanced AI integration
 
-from telegram import Update, ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup, ChatAction
+import logging
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
-from ai_integration import humanize_text, generate_seo_article, check_grammar, assist_writing
-from utilities import detect_language, generate_pdf, log_interaction
-import asyncio
-import requests
+from ai_service import AIService
+from language_detector import LanguageDetector
+from utils import Utils
+from config import Config
 
-# Image URL for visual enhancement
-IMAGE_URL = "https://graph.org/file/ff596066ce32ae4a5e635-1a9f69e38ad3c19549.jpg"
+logger = logging.getLogger(__name__)
 
-async def send_image(update: Update):
-    """Send the specified image if accessible, with fallback."""
-    try:
-        # Verify image URL
-        response = requests.head(IMAGE_URL, timeout=5)
-        if response.status_code == 200:
-            await update.message.chat.send_photo(photo=IMAGE_URL)
-        else:
-            await update.message.reply_text("Image unavailable, proceeding without it. 💗")
-    except Exception as e:
-        await update.message.reply_text("Image unavailable, proceeding without it. 💗")
-
-async def show_typing(update: Update):
-    """Show typing animation before responding."""
-    await update.message.chat.send_action(ChatAction.TYPING)
-    await asyncio.sleep(1)  # Simulate typing delay
-
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Handler for the /start command."""
-    await show_typing(update)
-    user_id = update.effective_user.id
-    lang = detect_language(update.message.text or "Hello")
-    await send_image(update)
-    keyboard = [
-        ["/menu", "/help"],
-        ["/humanize", "/seoarticle"],
-        ["/grammar", "/assist"],
-        ["/download"]
-    ]
-    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
-    if lang == "hi":
-        message = (
-            "जी ए राजा द्वारा बनाए गए AI-पावर्ड बॉट में आपका स्वागत है! 🤖\n"
-            "कमांड्स का उपयोग करके सुविधाओं तक पहुंचें:\n"
-            "- /humanize: टेक्स्ट को मानव जैसा बनाएं\n"
-            "- /seoarticle: SEO-अनुकूलित लेख बनाएं\n"
-            "- /grammar: व्याकरण जांचें\n"
-            "- /assist: लेखन सुझाव प्राप्त करें\n"
-            "- /menu: इंटरैक्टिव मेनू देखें\n"
-            "- /download: PDF के रूप में सामग्री डाउनलोड करें\n"
-            "- /help: यह संदेश दिखाएं"
-        )
-    else:
-        message = (
-            "Welcome to the AI-Powered Bot by G A RAZA! 🤖\n"
-            "Use commands to access features:\n"
-            "- /humanize: Make text human-like\n"
-            "- /seoarticle: Generate SEO-optimized articles\n"
-            "- /grammar: Check grammar\n"
-            "- /assist: Get writing suggestions\n"
-            "- /menu: View interactive menu\n"
-            "- /download: Download content as PDF\n"
-            "- /help: Show this message"
-        )
-    await update.message.reply_text(message, reply_markup=reply_markup)
-    log_interaction(user_id, "/start", "Started bot")
-
-async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Handler for the /help command."""
-    await show_typing(update)
-    user_id = update.effective_user.id
-    lang = detect_language(update.message.text or "Hello")
-    await send_image(update)
-    if lang == "hi":
-        message = (
-            "AI-पावर्ड बॉट | डेवलपर: जी ए राजा\n\n"
-            "उपलब्ध कमांड्स:\n"
-            "/humanize - टेक्स्ट को मानव जैसा बनाएं\n"
-            "/seoarticle - SEO-अनुकूलित लेख बनाएं\n"
-            "/grammar - टेक्स्ट में व्याकरण जांचें\n"
-            "/assist - लेखन में सुधार के लिए सुझाव\n"
-            "/menu - इंटरैक्टिव मेनू\n"
-            "/download - सामग्री को PDF के रूप में डाउनलोड करें\n"
-            "/help - यह सहायता संदेश"
-        )
-    else:
-        message = (
-            "AI-Powered Bot | Developer: G A RAZA\n\n"
-            "Available commands:\n"
-            "/humanize - Humanize AI-generated text\n"
-            "/seoarticle - Generate an SEO-optimized article\n"
-            "/grammar - Check grammar in your text\n"
-            "/assist - Get writing suggestions\n"
-            "/menu - Interactive menu\n"
-            "/download - Download content as PDF\n"
-            "/help - Show this help message"
-        )
-    await update.message.reply_text(message)
-    log_interaction(user_id, "/help", "Help requested")
-
-async def menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Handler for the /menu command with pink glass buttons."""
-    await show_typing(update)
-    user_id = update.effective_user.id
-    lang = detect_language(update.message.text or "Hello")
-    await send_image(update)
-    keyboard = [
-        [InlineKeyboardButton("✨💗 Humanize Text" if lang == "en" else "✨💗 टेक्स्ट मानवकृत करें", callback_data="humanize")],
-        [InlineKeyboardButton("✨💗 SEO Article" if lang == "en" else "✨💗 SEO लेख", callback_data="seoarticle")],
-        [InlineKeyboardButton("✨💗 Grammar Check" if lang == "en" else "✨💗 व्याकरण जांच", callback_data="grammar")],
-        [InlineKeyboardButton("✨💗 Writing Assistant" if lang == "en" else "✨💗 लेखन सहायक", callback_data="assist")],
-        [InlineKeyboardButton("✨💗 Download PDF" if lang == "en" else "✨💗 PDF डाउनलोड करें", callback_data="download")]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    message = "Select a feature: 💗" if lang == "en" else "एक सुविधा चुनें: 💗"
-    await update.message.reply_text(message, reply_markup=reply_markup)
-    log_interaction(user_id, "/menu", message)
-
-async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Handle inline button clicks."""
-    query = update.callback_query
-    await query.answer()
-    await query.message.chat.send_action(ChatAction.TYPING)
-    await asyncio.sleep(1)
-    lang = detect_language(query.data or "Hello")
-    command = query.data
-    if command in ["humanize", "seoarticle", "grammar", "assist", "download"]:
-        message = {
-            "humanize": "Please provide text to humanize. 💗" if lang == "en" else "कृपया टेक्स्ट प्रदान करें जिसे मानवकृत करना है। 💗",
-            "seoarticle": "Please provide a topic and keywords. 💗" if lang == "en" else "कृपया विषय और कीवर्ड प्रदान करें। 💗",
-            "grammar": "Please provide text to check grammar. 💗" if lang == "en" else "कृपया व्याकरण जांच के लिए टेक्स्ट प्रदान करें। 💗",
-            "assist": "Please provide text for writing assistance. 💗" if lang == "en" else "कृपया लेखन सहायता के लिए टेक्स्ट प्रदान करें। 💗",
-            "download": "Please provide text to download as PDF. 💗" if lang == "en" else "कृपया PDF के रूप में डाउनलोड करने के लिए टेक्स्ट प्रदान करें। 💗"
-        }[command]
-        context.user_data["last_command"] = command
-        await query.message.reply_text(message)
-    log_interaction(update.effective_user.id, f"button_{command}", "Button clicked")
-
-async def humanize(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Handle /humanize command or text messages."""
-    await show_typing(update)
-    user_id = update.effective_user.id
-    text = ' '.join(context.args) if context.args else update.message.text
-    lang = detect_language(text or "Hello")
-    if not text or text.startswith('/'):
-        message = "Please provide text to humanize. Example: /humanize Your text here 💗" if lang == "en" else "कृपया टेक्स्ट प्रदान करें जिसे मानवकृत करना है। उदाहरण: /humanize आपका टेक्स्ट 💗"
-        await update.message.reply_text(message)
-        return
-    await send_image(update)
-    humanized_text = humanize_text(text, lang)
-    await update.message.reply_text(f"{'Humanized Text' if lang == 'en' else 'मानवकृत टेक्स्ट'}:\n{humanized_text} 💗💗")
-    context.user_data["last_output"] = humanized_text
-    log_interaction(user_id, "/humanize", text)
-
-async def seo_article(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Handler for /seoarticle command."""
-    await show_typing(update)
-    user_id = update.effective_user.id
-    text = ' '.join(context.args)
-    lang = detect_language(text or "Hello")
-    await send_image(update)
-    if not text:
-        message = "Please provide a topic and keywords. Example: /seoarticle Topic: AI Bots Keywords: AI, chatbot 💗" if lang == "en" else "कृपया विषय और कीवर्ड प्रदान करें। उदाहरण: /seoarticle विषय: AI बॉट्स कीवर्ड: AI, चैटबॉट 💗"
-        await update.message.reply_text(message)
-        return
-    article = generate_seo_article(text, lang)
-    await update.message.reply_text(f"{'SEO-Optimized Article' if lang == 'en' else 'SEO अनुकूलित लेख'}:\n{article} 💗💗")
-    context.user_data["last_output"] = article
-    log_interaction(user_id, "/seoarticle", text)
-
-async def grammar_check(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Handler for /grammar command."""
-    await show_typing(update)
-    user_id = update.effective_user.id
-    text = ' '.join(context.args)
-    lang = detect_language(text or "Hello")
-    await send_image(update)
-    if not text:
-        message = "Please provide text to check grammar. Example: /grammar Your text here 💗" if lang == "en" else "कृपया व्याकरण जांच के लिए टेक्स्ट प्रदान करें। उदाहरण: /grammar आपका टेक्स्ट 💗"
-        await update.message.reply_text(message)
-        return
-    corrections = check_grammar(text)
-    await update.message.reply_text(f"{'Grammar Check' if lang == 'en' else 'व्याकरण जांच'}:\n{corrections} 💗💗")
-    context.user_data["last_output"] = corrections
-    log_interaction(user_id, "/grammar", text)
-
-async def writing_assist(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Handler for /assist command."""
-    await show_typing(update)
-    user_id = update.effective_user.id
-    text = ' '.join(context.args)
-    lang = detect_language(text or "Hello")
-    await send_image(update)
-    if not text:
-        message = "Please provide text for writing assistance. Example: /assist Your text here 💗" if lang == "en" else "कृपया लेखन सहायता के लिए टेक्स्ट प्रदान करें। उदाहरण: /assist आपका टेक्स्ट 💗"
-        await update.message.reply_text(message)
-        return
-    suggestions = assist_writing(text, lang)
-    await update.message.reply_text(f"{'Writing Suggestions' if lang == 'en' else 'लेखन सुझाव'}:\n{suggestions} 💗💗")
-    context.user_data["last_output"] = suggestions
-    log_interaction(user_id, "/assist", text)
-
-async def download(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Handler for /download command."""
-    await show_typing(update)
-    user_id = update.effective_user.id
-    lang = detect_language(update.message.text or "Hello")
-    await send_image(update)
-    if "last_output" not in context.user_data:
-        message = "No content available to download. Please use a command like /humanize or /seoarticle first. 💗" if lang == "en" else "डाउनलोड करने के लिए कोई सामग्री उपलब्ध नहीं है। कृपया पहले /humanize या /seoarticle जैसे कमांड का उपयोग करें। 💗"
-        await update.message.reply_text(message)
-        return
-    content = context.user_data["last_output"]
-    pdf_path = generate_pdf(content, lang)
-    with open(pdf_path, "rb") as f:
-        await update.message.reply_document(document=f, filename="output.pdf")
-    message = "PDF downloaded successfully! 💗💗" if lang == "en" else "PDF सफलतापूर्वक डाउनलोड हो गया! 💗💗"
-    await update.message.reply_text(message)
-    log_interaction(user_id, "/download", "PDF downloaded")
+class BotHandlers:
+    def __init__(self):
+        self.ai_service = AIService()
+        self.language_detector = LanguageDetector()
+        self.utils = Utils()
+    
+    async def start_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Handle /start command"""
+        try:
+            user_info = self.utils.get_user_info(update)
+            user_lang = self.language_detector.detect_language(
+                update.message.text or user_info.get('language_code', 'en')
+            )
+            
+            # Simulate typing
+            await self.utils.simulate_typing(update.effective_chat.id, context)
+            
+            # Get localized welcome message
+            welcome_data = self.language_detector.get_welcome_message(user_lang)
+            
+            # Create inline keyboard
+            keyboard = [
+                [InlineKeyboardButton("🆕 New Chat", callback_data="new_chat")],
+                [InlineKeyboardButton("📊 Chat Stats", callback_data="stats")],
+                [InlineKeyboardButton("🌐 Language", callback_data="language")],
+                [InlineKeyboardButton("ℹ️ Help", callback_data="help")]
+            ]
+            reply_markup = InlineKeyboardMarkup(keyboard)
+            
+            # Send welcome message
+            full_message = f"{welcome_data['welcome']}\n\n{welcome_data['features']}\n\n{welcome_data['start_chat']}"
+            
+            await update.message.reply_text(
+                full_message,
+                reply_markup=reply_markup,
+                parse_mode='HTML'
+            )
+            
+            # Log interaction
+            self.utils.log_user_interaction(
+                user_info['id'], 
+                user_info['username'], 
+                "/start", 
+                len(full_message)
+            )
+            
+        except Exception as e:
+            logger.error(f"Error in start_command: {e}")
+            await update.message.reply_text("Sorry, something went wrong. Please try again.")
+    
+    async def handle_message(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Handle all text messages with AI response"""
+        try:
+            user_info = self.utils.get_user_info(update)
+            user_message = update.message.text
+            
+            # Detect language
+            detected_lang = self.language_detector.detect_language(user_message)
+            
+            # Simulate typing
+            await self.utils.simulate_typing(update.effective_chat.id, context, duration=3)
+            
+            # Get AI response
+            ai_response = await self.ai_service.get_ai_response(
+                user_info['id'], 
+                user_message, 
+                detected_lang
+            )
+            
+            # Format response with emojis
+            formatted_response = self.utils.format_response_with_emojis(ai_response, detected_lang)
+            
+            # Split long messages
+            message_chunks = self.utils.split_long_message(formatted_response)
+            
+            # Send response(s)
+            for i, chunk in enumerate(message_chunks):
+                if i > 0:  # Add small delay between chunks
+                    await self.utils.simulate_typing(update.effective_chat.id, context, duration=1)
+                
+                await update.message.reply_text(
+                    chunk,
+                    parse_mode='Markdown' if '*' in chunk or '_' in chunk else None
+                )
+            
+            # Log interaction
+            self.utils.log_user_interaction(
+                user_info['id'],
+                user_info['username'],
+                user_message,
+                len(ai_response)
+            )
+            
+        except Exception as e:
+            logger.error(f"Error in handle_message: {e}")
+            error_messages = {
+                'hi': "माफ़ करें, कुछ गलत हुआ है। कृपया दोबारा कोशिश करें। 🙏",
+                'ur': "معذرت، کچھ غلط ہوا ہے۔ براہ کرم دوبارہ کوشش کریں۔ 🙏",
+                'ar': "عذراً، حدث خطأ ما. يرجى المحاولة مرة أخرى. 🙏",
+                'default': "Sorry, something went wrong. Please try again. 🙏"
+            }
+            
+            detected_lang = self.language_detector.detect_language(update.message.text or "")
+            error_msg = error_messages.get(detected_lang, error_messages['default'])
+            
+            await update.message.reply_text(error_msg)
+    
+    async def button_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Handle inline button callbacks"""
+        try:
+            query = update.callback_query
+            await query.answer()
+            
+            user_info = self.utils.get_user_info(update)
+            callback_data = query.data
+            
+            if callback_data == "new_chat":
+                # Clear conversation history
+                self.ai_service.clear_conversation(user_info['id'])
+                await query.edit_message_text(
+                    f"{Config.SUCCESS_EMOJI} New chat started! Your conversation history has been cleared.\n\n"
+                    "💬 Send me any message to begin our conversation!"
+                )
+            
+            elif callback_data == "stats":
+                # Show chat statistics
+                msg_count = self.ai_service.get_conversation_count(user_info['id'])
+                stats_text = (
+                    f"📊 **Your Chat Statistics**\n\n"
+                    f"💬 Messages in current session: {msg_count}\n"
+                    f"🆔 User ID: {user_info['id']}\n"
+                    f"👤 Username: @{user_info['username']}\n"
+                    f"🌐 Detected Language: {self.language_detector.get_language_name('en')}"
+                )
+                await query.edit_message_text(stats_text, parse_mode='Markdown')
+            
+            elif callback_data == "language":
+                # Show language information
+                lang_text = (
+                    "🌐 **Language Support**\n\n"
+                    "I automatically detect and respond in your language!\n\n"
+                    "Supported languages:\n"
+                    "🇺🇸 English\n"
+                    "🇮🇳 हिंदी (Hindi)\n"
+                    "🇵🇰 اردو (Urdu)\n"
+                    "🇸🇦 العربية (Arabic)\n"
+                    "🇧🇩 বাংলা (Bengali)\n"
+                    "🇮🇳 தமிழ் (Tamil)\n"
+                    "And many more...\n\n"
+                    "Just type in your preferred language!"
+                )
+                await query.edit_message_text(lang_text, parse_mode='Markdown')
+            
+            elif callback_data == "help":
+                # Show help information
+                help_text = (
+                    "ℹ️ **How to use this bot:**\n\n"
+                    "1. Just send me any message in any language\n"
+                    "2. I'll respond intelligently in the same language\n"
+                    "3. I remember our conversation context\n"
+                    "4. Use /new to start a fresh conversation\n"
+                    "5. Use /export to download our chat as PDF\n\n"
+                    "**Features:**\n"
+                    "• Multi-language support\n"
+                    "• Context-aware responses\n"
+                    "• Natural conversation flow\n"
+                    "• Smart typing indicators\n"
+                    "• PDF export functionality\n\n"
+                    "💡 **Tip:** I work best with clear, specific questions!"
+                )
+                await query.edit_message_text(help_text, parse_mode='Markdown')
+            
+        except Exception as e:
+            logger.error(f"Error in button_callback: {e}")
+            await query.edit_message_text("Sorry, something went wrong with that action.")
+    
+    async def new_chat_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Handle /new command to start fresh conversation"""
+        try:
+            user_info = self.utils.get_user_info(update)
+            self.ai_service.clear_conversation(user_info['id'])
+            
+            detected_lang = self.language_detector.detect_language(
+                update.message.text or user_info.get('language_code', 'en')
+            )
+            
+            messages = {
+                'hi': f"{Config.SUCCESS_EMOJI} नई चैट शुरू हो गई! अब आप मुझसे कुछ भी पूछ सकते हैं।",
+                'ur': f"{Config.SUCCESS_EMOJI} نئی چیٹ شروع ہو گئی! اب آپ مجھ سے کچھ بھی پوچھ سکتے ہیں۔",
+                'ar': f"{Config.SUCCESS_EMOJI} بدأت محادثة جديدة! يمكنك الآن أن تسألني أي شيء.",
+                'default': f"{Config.SUCCESS_EMOJI} New chat started! You can now ask me anything."
+            }
+            
+            message = messages.get(detected_lang, messages['default'])
+            await update.message.reply_text(message)
+            
+        except Exception as e:
+            logger.error(f"Error in new_chat_command: {e}")
+            await update.message.reply_text("Sorry, couldn't start new chat. Please try again.")
+    
+    async def export_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Handle /export command to export chat as PDF"""
+        try:
+            user_info = self.utils.get_user_info(update)
+            
+            # Check if there's conversation history
+            if user_info['id'] not in self.ai_service.conversation_history:
+                await update.message.reply_text(
+                    "No conversation history found. Start chatting first!"
+                )
+                return
+            
+            await self.utils.simulate_typing(update.effective_chat.id, context)
+            
+            # Get conversation history
+            history = self.ai_service.conversation_history[user_info['id']]
+            
+            # Format conversation for PDF
+            conversation_text = ""
+            for msg in history:
+                role = "You" if msg['role'] == 'user' else "AI Assistant"
+                conversation_text += f"{role}: {msg['content']}\n\n"
+            
+            # Generate PDF
+            pdf_path = await self.utils.generate_pdf(
+                conversation_text, 
+                f"Chat with AI Assistant - {user_info['username']}"
+            )
+            
+            # Send PDF
+            with open(pdf_path, 'rb') as pdf_file:
+                await update.message.reply_document(
+                    document=pdf_file,
+                    filename=f"ai_chat_{user_info['username']}.pdf",
+                    caption=f"{Config.SUCCESS_EMOJI} Your chat has been exported as PDF!"
+                )
+            
+            # Clean up temporary file
+            import os
+            os.remove(pdf_path)
+            
+        except Exception as e:
+            logger.error(f"Error in export_command: {e}")
+            await update.message.reply_text("Sorry, couldn't export chat. Please try again.")
