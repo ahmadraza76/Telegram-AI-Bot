@@ -10,12 +10,12 @@ load_dotenv()
 class Config:
     # Bot Configuration
     TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
-    OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+    GROQ_API_KEY = os.getenv('GROQ_API_KEY')
     BOT_USERNAME = os.getenv('BOT_USERNAME', 'UstaadAIBot')
     ADMIN_USER_ID = int(os.getenv('ADMIN_USER_ID', '0'))
     
     # AI Configuration
-    DEFAULT_MODEL = "gpt-3.5-turbo"
+    DEFAULT_MODEL = "llama3-8b-8192"  # Groq's fast model
     MAX_TOKENS = 4000
     TEMPERATURE = 0.7
     
@@ -47,6 +47,6 @@ class Config:
         """Validate required configuration"""
         if not cls.TELEGRAM_BOT_TOKEN:
             raise ValueError("TELEGRAM_BOT_TOKEN is required")
-        if not cls.OPENAI_API_KEY:
-            raise ValueError("OPENAI_API_KEY is required")
+        if not cls.GROQ_API_KEY:
+            raise ValueError("GROQ_API_KEY is required")
         return True

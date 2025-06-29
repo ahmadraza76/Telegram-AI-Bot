@@ -1,19 +1,18 @@
 # ai_service.py
 # Developer: Mr @Mrnick66
-# Advanced AI service with OpenAI integration for USTAAD-AI
+# Advanced AI service with Groq integration for USTAAD-AI
 
-import openai
 import asyncio
 import logging
 from typing import List, Dict, Optional
+from groq import Groq
 from config import Config
 
 logger = logging.getLogger(__name__)
 
 class AIService:
     def __init__(self):
-        openai.api_key = Config.OPENAI_API_KEY
-        self.client = openai.OpenAI(api_key=Config.OPENAI_API_KEY)
+        self.client = Groq(api_key=Config.GROQ_API_KEY)
         self.conversation_history = {}
         
     async def get_ai_response(self, user_id: int, message: str, language: str = "auto") -> str:
@@ -45,7 +44,7 @@ class AIService:
             messages = [{"role": "system", "content": system_prompt}]
             messages.extend(self.conversation_history[user_id])
             
-            # Get response from OpenAI
+            # Get response from Groq
             response = await asyncio.to_thread(
                 self.client.chat.completions.create,
                 model=Config.DEFAULT_MODEL,

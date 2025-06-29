@@ -8,7 +8,7 @@
 ## ✨ Key Features
 
 ### 🧠 Advanced AI Intelligence
-- **ChatGPT-like Responses**: Powered by OpenAI GPT-3.5 Turbo
+- **ChatGPT-like Responses**: Powered by Groq's Lightning-Fast LLaMA 3 Model
 - **Context Awareness**: Remembers conversation history
 - **Natural Conversations**: Human-like interactions
 - **Smart Understanding**: Comprehends complex queries
@@ -53,7 +53,7 @@
 ### Prerequisites
 - Python 3.11+
 - Telegram Bot Token
-- OpenAI API Key
+- Groq API Key (Get from: https://console.groq.com/keys)
 
 ### Installation
 ```bash
@@ -76,7 +76,7 @@ python main.py
 ### Environment Variables
 ```env
 TELEGRAM_BOT_TOKEN=your_bot_token_here
-OPENAI_API_KEY=your_openai_api_key_here
+GROQ_API_KEY=your_groq_api_key_here
 BOT_USERNAME=UstaadAIBot
 ADMIN_USER_ID=your_telegram_user_id
 ```
@@ -99,7 +99,7 @@ ADMIN_USER_ID=your_telegram_user_id
 ## 🛠️ Technical Specifications
 
 - **Framework**: Python Telegram Bot API
-- **AI Model**: OpenAI GPT-3.5 Turbo
+- **AI Model**: Groq LLaMA 3 8B (Lightning Fast)
 - **Language Detection**: Advanced pattern matching + langdetect
 - **Deployment**: Docker containerized
 - **Logging**: Structured logging system
@@ -113,6 +113,7 @@ ADMIN_USER_ID=your_telegram_user_id
 
 ## 🌟 What Makes It Special
 
+- **Lightning Fast**: Groq's ultra-fast inference
 - **Minimal Design**: Only essential commands
 - **Maximum Functionality**: Full AI capabilities
 - **Premium Branding**: Professional USTAAD-AI identity
@@ -123,13 +124,13 @@ ADMIN_USER_ID=your_telegram_user_id
 
 - **Commands**: 3 (Start, Help, Info)
 - **Languages**: 50+ supported
-- **Response Time**: < 3 seconds
+- **Response Time**: < 1 second (Groq powered)
 - **Context Memory**: 20 messages
 - **Uptime**: 99.9%
 
 ## 🔒 Security & Privacy
 
-- **Secure API**: Protected OpenAI integration
+- **Secure API**: Protected Groq integration
 - **Data Privacy**: No sensitive data logging
 - **Environment Variables**: Secure configuration
 - **Error Handling**: Safe error management
@@ -145,4 +146,4 @@ ADMIN_USER_ID=your_telegram_user_id
 
 **🎯 USTAAD-AI v2.5.0 | Powered by USTAAD-AI | Developer: Mr @Mrnick66**
 
-*Experience the future of AI conversation on Telegram*
+*Experience the future of AI conversation on Telegram with Lightning-Fast Groq AI*
