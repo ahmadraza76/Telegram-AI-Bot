@@ -7,6 +7,7 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
 from ai_service import AIService
 from language_detector import LanguageDetector
+from user_preferences import UserPreferences
 from utils import Utils
 from config import Config
 
@@ -16,30 +17,36 @@ class BotHandlers:
     def __init__(self):
         self.ai_service = AIService()
         self.language_detector = LanguageDetector()
+        self.user_preferences = UserPreferences()
         self.utils = Utils()
     
     async def start_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Handle /start command"""
         try:
             user_info = self.utils.get_user_info(update)
-            user_lang = self.language_detector.detect_language(
-                update.message.text or user_info.get('language_code', 'en')
-            )
+            
+            # Get user's preferred language or detect from message
+            preferred_lang = self.user_preferences.get_user_language(user_info['id'])
+            if not preferred_lang:
+                preferred_lang = self.language_detector.detect_language(
+                    update.message.text or user_info.get('language_code', 'en')
+                )
             
             # Simulate typing
             await self.utils.simulate_typing(update.effective_chat.id, context)
             
             # Get localized welcome message
-            welcome_data = self.language_detector.get_welcome_message(user_lang)
+            welcome_data = self.language_detector.get_welcome_message(preferred_lang)
             
-            # Create inline keyboard with HELP, INFO, and MENU
+            # Create inline keyboard with HELP, INFO, SETTINGS, and MENU
             keyboard = [
                 [
                     InlineKeyboardButton("🆘 HELP", callback_data="help"),
                     InlineKeyboardButton("ℹ️ INFO", callback_data="info")
                 ],
                 [
-                    InlineKeyboardButton("🏠 MAIN MENU", callback_data="main_menu")
+                    InlineKeyboardButton("🌍 Language", callback_data="language_settings"),
+                    InlineKeyboardButton("🏠 MENU", callback_data="main_menu")
                 ]
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
@@ -69,13 +76,17 @@ class BotHandlers:
         """Handle /help command"""
         try:
             user_info = self.utils.get_user_info(update)
-            user_lang = self.language_detector.detect_language(
-                update.message.text or user_info.get('language_code', 'en')
-            )
+            
+            # Get user's preferred language
+            preferred_lang = self.user_preferences.get_user_language(user_info['id'])
+            if not preferred_lang:
+                preferred_lang = self.language_detector.detect_language(
+                    update.message.text or user_info.get('language_code', 'en')
+                )
             
             await self.utils.simulate_typing(update.effective_chat.id, context)
             
-            help_message = self.language_detector.get_help_message(user_lang)
+            help_message = self.language_detector.get_help_message(preferred_lang)
             
             # Add back button
             keyboard = [
@@ -104,13 +115,17 @@ class BotHandlers:
         """Handle /info command"""
         try:
             user_info = self.utils.get_user_info(update)
-            user_lang = self.language_detector.detect_language(
-                update.message.text or user_info.get('language_code', 'en')
-            )
+            
+            # Get user's preferred language
+            preferred_lang = self.user_preferences.get_user_language(user_info['id'])
+            if not preferred_lang:
+                preferred_lang = self.language_detector.detect_language(
+                    update.message.text or user_info.get('language_code', 'en')
+                )
             
             await self.utils.simulate_typing(update.effective_chat.id, context)
             
-            info_message = self.language_detector.get_info_message(user_lang)
+            info_message = self.language_detector.get_info_message(preferred_lang)
             
             # Add back button
             keyboard = [
@@ -141,8 +156,13 @@ class BotHandlers:
             user_info = self.utils.get_user_info(update)
             user_message = update.message.text
             
-            # Detect language
-            detected_lang = self.language_detector.detect_language(user_message)
+            # Get user's preferred language or detect from message
+            preferred_lang = self.user_preferences.get_user_language(user_info['id'])
+            if not preferred_lang:
+                detected_lang = self.language_detector.detect_language(user_message)
+                # Save detected language as preference
+                self.user_preferences.set_user_language(user_info['id'], detected_lang)
+                preferred_lang = detected_lang
             
             # Simulate typing
             await self.utils.simulate_typing(update.effective_chat.id, context, duration=3)
@@ -151,11 +171,11 @@ class BotHandlers:
             ai_response = await self.ai_service.get_ai_response(
                 user_info['id'], 
                 user_message, 
-                detected_lang
+                preferred_lang
             )
             
             # Format response with emojis
-            formatted_response = self.utils.format_response_with_emojis(ai_response, detected_lang)
+            formatted_response = self.utils.format_response_with_emojis(ai_response, preferred_lang)
             
             # Split long messages
             message_chunks = self.utils.split_long_message(formatted_response)
@@ -164,7 +184,7 @@ class BotHandlers:
             keyboard = [
                 [
                     InlineKeyboardButton("🏠 Menu", callback_data="main_menu"),
-                    InlineKeyboardButton("🆘 Help", callback_data="help")
+                    InlineKeyboardButton("🌍 Language", callback_data="language_settings")
                 ]
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
@@ -193,6 +213,11 @@ class BotHandlers:
             
         except Exception as e:
             logger.error(f"Error in handle_message: {e}")
+            
+            # Get user's preferred language for error message
+            user_info = self.utils.get_user_info(update)
+            preferred_lang = self.user_preferences.get_user_language(user_info['id']) or 'en'
+            
             error_messages = {
                 'hi': "माफ़ करें, कुछ गलत हुआ है। कृपया दोबारा कोशिश करें। 🙏",
                 'ur': "معذرت، کچھ غلط ہوا ہے۔ براہ کرم دوبارہ کوشش کریں۔ 🙏",
@@ -200,8 +225,7 @@ class BotHandlers:
                 'default': "Sorry, something went wrong. Please try again. 🙏"
             }
             
-            detected_lang = self.language_detector.detect_language(update.message.text or "")
-            error_msg = error_messages.get(detected_lang, error_messages['default'])
+            error_msg = error_messages.get(preferred_lang, error_messages['default'])
             
             # Add menu button even for error messages
             keyboard = [
@@ -220,13 +244,16 @@ class BotHandlers:
             user_info = self.utils.get_user_info(update)
             callback_data = query.data
             
-            user_lang = self.language_detector.detect_language(
-                query.message.text or user_info.get('language_code', 'en')
-            )
+            # Get user's preferred language
+            preferred_lang = self.user_preferences.get_user_language(user_info['id'])
+            if not preferred_lang:
+                preferred_lang = self.language_detector.detect_language(
+                    query.message.text or user_info.get('language_code', 'en')
+                )
             
             if callback_data == "main_menu":
                 # Show main menu
-                welcome_data = self.language_detector.get_welcome_message(user_lang)
+                welcome_data = self.language_detector.get_welcome_message(preferred_lang)
                 
                 keyboard = [
                     [
@@ -234,6 +261,7 @@ class BotHandlers:
                         InlineKeyboardButton("ℹ️ INFO", callback_data="info")
                     ],
                     [
+                        InlineKeyboardButton("🌍 Language", callback_data="language_settings"),
                         InlineKeyboardButton("💬 Start Chat", callback_data="start_chat")
                     ]
                 ]
@@ -247,8 +275,74 @@ class BotHandlers:
                     parse_mode='Markdown'
                 )
             
+            elif callback_data == "language_settings":
+                # Show language selection
+                settings_message = self.language_detector.get_language_settings_message(preferred_lang)
+                
+                # Create language selection buttons
+                popular_langs = self.language_detector.get_popular_languages()
+                keyboard = []
+                
+                # Add popular languages in pairs
+                lang_items = list(popular_langs.items())
+                for i in range(0, len(lang_items), 2):
+                    row = []
+                    for j in range(2):
+                        if i + j < len(lang_items):
+                            lang_code, lang_name = lang_items[i + j]
+                            # Mark current language
+                            if lang_code == preferred_lang:
+                                lang_name += " ✅"
+                            row.append(InlineKeyboardButton(lang_name, callback_data=f"set_lang_{lang_code}"))
+                    keyboard.append(row)
+                
+                # Add back button
+                keyboard.append([InlineKeyboardButton("🔙 Back to Menu", callback_data="main_menu")])
+                reply_markup = InlineKeyboardMarkup(keyboard)
+                
+                await query.edit_message_text(
+                    settings_message,
+                    reply_markup=reply_markup,
+                    parse_mode='Markdown'
+                )
+            
+            elif callback_data.startswith("set_lang_"):
+                # Set user's language preference
+                new_lang = callback_data.replace("set_lang_", "")
+                self.user_preferences.set_user_language(user_info['id'], new_lang)
+                
+                # Show confirmation message
+                confirmations = {
+                    'en': f"✅ **Language Updated!**\n\nYour language has been set to **English**.\n\nAll future conversations will be in English.",
+                    'hi': f"✅ **भाषा अपडेट हो गई!**\n\nआपकी भाषा **हिंदी** में सेट कर दी गई है।\n\nभविष्य की सभी बातचीत हिंदी में होगी।",
+                    'ur': f"✅ **زبان اپڈیٹ ہو گئی!**\n\nآپ کی زبان **اردو** میں سیٹ کر دی گئی ہے۔\n\nمستقبل کی تمام گفتگو اردو میں ہوگی۔",
+                    'ar': f"✅ **تم تحديث اللغة!**\n\nتم تعيين لغتك إلى **العربية**.\n\nجميع المحادثات المستقبلية ستكون بالعربية.",
+                    'es': f"✅ **¡Idioma Actualizado!**\n\nTu idioma ha sido configurado a **Español**.\n\nTodas las conversaciones futuras serán en español.",
+                    'fr': f"✅ **Langue Mise à Jour!**\n\nVotre langue a été définie sur **Français**.\n\nToutes les conversations futures seront en français.",
+                    'de': f"✅ **Sprache Aktualisiert!**\n\nIhre Sprache wurde auf **Deutsch** eingestellt.\n\nAlle zukünftigen Gespräche werden auf Deutsch sein.",
+                    'ru': f"✅ **Язык Обновлен!**\n\nВаш язык установлен на **Русский**.\n\nВсе будущие разговоры будут на русском языке.",
+                    'ja': f"✅ **言語が更新されました！**\n\nあなたの言語は**日本語**に設定されました。\n\n今後のすべての会話は日本語で行われます。",
+                    'zh': f"✅ **语言已更新！**\n\n您的语言已设置为**中文**。\n\n未来的所有对话都将使用中文。"
+                }
+                
+                confirmation_msg = confirmations.get(new_lang, confirmations['en'])
+                
+                keyboard = [
+                    [
+                        InlineKeyboardButton("🔙 Back to Settings", callback_data="language_settings"),
+                        InlineKeyboardButton("🏠 Main Menu", callback_data="main_menu")
+                    ]
+                ]
+                reply_markup = InlineKeyboardMarkup(keyboard)
+                
+                await query.edit_message_text(
+                    confirmation_msg,
+                    reply_markup=reply_markup,
+                    parse_mode='Markdown'
+                )
+            
             elif callback_data == "help":
-                help_message = self.language_detector.get_help_message(user_lang)
+                help_message = self.language_detector.get_help_message(preferred_lang)
                 
                 keyboard = [
                     [InlineKeyboardButton("🔙 Back to Menu", callback_data="main_menu")]
@@ -262,7 +356,7 @@ class BotHandlers:
                 )
             
             elif callback_data == "info":
-                info_message = self.language_detector.get_info_message(user_lang)
+                info_message = self.language_detector.get_info_message(preferred_lang)
                 
                 keyboard = [
                     [InlineKeyboardButton("🔙 Back to Menu", callback_data="main_menu")]
@@ -289,7 +383,7 @@ class BotHandlers:
                 ]
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 
-                chat_msg = chat_messages.get(user_lang, chat_messages['default'])
+                chat_msg = chat_messages.get(preferred_lang, chat_messages['default'])
                 
                 await query.edit_message_text(
                     chat_msg,
