@@ -12,4 +12,3 @@ pillow==10.1.0
 reportlab==4.0.7
 markdown==3.5.1
 beautifulsoup4==4.12.2
-asyncio==3.4.3
