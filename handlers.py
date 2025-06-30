@@ -3,6 +3,7 @@
 # USTAAD-AI Premium Telegram bot handlers
 
 import logging
+import os
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
 from ai_service import AIService
@@ -22,6 +23,8 @@ class BotHandlers:
         self.music_service = MusicService()
         self.utils = Utils()
         self.broadcast_messages = {}  # Store broadcast messages temporarily
+        
+        logger.info("🎵 Bot handlers initialized with music service")
     
     async def start_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Handle /start command"""
@@ -59,8 +62,16 @@ class BotHandlers:
             
             reply_markup = InlineKeyboardMarkup(keyboard)
             
-            # Send welcome message
-            full_message = f"{welcome_data['welcome']}\n\n{welcome_data['description']}\n\n{welcome_data['start_chat']}"
+            # Send welcome message with music feature info
+            music_info = {
+                'hi': "\n\n🎵 **Music Feature**: आप सिर्फ गाने का नाम लिखकर music download कर सकते हैं!",
+                'ur': "\n\n🎵 **Music Feature**: آپ صرف گانے کا نام لکھ کر music download کر سکتے ہیں!",
+                'en': "\n\n🎵 **Music Feature**: You can download music by just typing the song name!",
+                'default': "\n\n🎵 **Music Feature**: You can download music by just typing the song name!"
+            }
+            
+            music_text = music_info.get(preferred_lang, music_info['default'])
+            full_message = f"{welcome_data['welcome']}\n\n{welcome_data['description']}\n\n{welcome_data['start_chat']}{music_text}"
             
             await update.message.reply_text(
                 full_message,
@@ -208,6 +219,8 @@ class BotHandlers:
             user_info = self.utils.get_user_info(update)
             user_message = update.message.text
             
+            logger.info(f"📨 Received message from user {user_info['id']}: '{user_message}'")
+            
             # Get user's preferred language or detect from message
             preferred_lang = self.user_preferences.get_user_language(user_info['id'])
             if not preferred_lang:
@@ -216,16 +229,22 @@ class BotHandlers:
                 self.user_preferences.set_user_language(user_info['id'], detected_lang)
                 preferred_lang = detected_lang
             
-            # Check if this is a music request
-            if self.music_service.is_music_request(user_message):
+            # Check if this is a music request FIRST
+            logger.info(f"🔍 Checking if '{user_message}' is a music request...")
+            is_music = self.music_service.is_music_request(user_message)
+            logger.info(f"🎵 Music check result: {is_music}")
+            
+            if is_music:
+                logger.info(f"🎵 Music request detected: '{user_message}'")
                 await self.handle_music_request(update, context, user_message, user_info, preferred_lang)
                 return
             
             # Regular AI response
+            logger.info(f"🤖 Processing as AI request: '{user_message}'")
             await self.handle_ai_response(update, context, user_message, user_info, preferred_lang)
             
         except Exception as e:
-            logger.error(f"Error in handle_message: {e}")
+            logger.error(f"❌ Error in handle_message: {e}")
             
             # Get user's preferred language for error message
             user_info = self.utils.get_user_info(update)
@@ -252,6 +271,8 @@ class BotHandlers:
                                  query: str, user_info: dict, preferred_lang: str):
         """Handle music download request"""
         try:
+            logger.info(f"🎵 Processing music request: '{query}'")
+            
             # Show searching message
             search_messages = {
                 'hi': f"🎵 **'{query}'** खोज रहा हूं...\n\n⏳ कृपया प्रतीक्षा करें, मैं आपके लिए बेहतरीन गाना ढूंढ रहा हूं!",
@@ -264,10 +285,12 @@ class BotHandlers:
             status_message = await update.message.reply_text(search_msg, parse_mode='Markdown')
             
             # Process music request
+            logger.info(f"🔍 Starting music processing for: '{query}'")
             result = await self.music_service.process_music_request(query)
             
             if result:
                 audio_file, video_info = result
+                logger.info(f"✅ Music processing successful: {audio_file}")
                 
                 # Update status to downloading
                 download_messages = {
@@ -281,50 +304,64 @@ class BotHandlers:
                 await status_message.edit_text(download_msg, parse_mode='Markdown')
                 
                 # Send audio file
-                with open(audio_file, 'rb') as audio:
-                    # Create music control buttons
-                    keyboard = [
-                        [
-                            InlineKeyboardButton("⬅️", callback_data="music_prev"),
-                            InlineKeyboardButton("⏸️", callback_data="music_pause"),
-                            InlineKeyboardButton("➡️", callback_data="music_next")
-                        ],
-                        [InlineKeyboardButton("Main Menu", callback_data="main_menu")]
-                    ]
+                try:
+                    logger.info(f"📤 Sending audio file: {audio_file}")
                     
-                    # Add BROADCAST button only for admin
-                    if self.utils.is_admin(user_info['id']):
-                        keyboard.insert(1, [InlineKeyboardButton("BROADCAST", callback_data="admin_broadcast")])
-                    
-                    reply_markup = InlineKeyboardMarkup(keyboard)
-                    
-                    # Prepare caption
-                    caption_messages = {
-                        'hi': f"🎵 **{video_info['title']}**\n\n👤 **कलाकार:** {video_info.get('channel', 'Unknown')}\n⏱️ **अवधि:** {video_info.get('duration', 'Unknown')}\n\n🎧 आनंद लें!",
-                        'ur': f"🎵 **{video_info['title']}**\n\n👤 **فنکار:** {video_info.get('channel', 'Unknown')}\n⏱️ **مدت:** {video_info.get('duration', 'Unknown')}\n\n🎧 لطف اٹھائیں!",
-                        'en': f"🎵 **{video_info['title']}**\n\n👤 **Artist:** {video_info.get('channel', 'Unknown')}\n⏱️ **Duration:** {video_info.get('duration', 'Unknown')}\n\n🎧 Enjoy!",
-                        'default': f"🎵 **{video_info['title']}**\n\n👤 **Artist:** {video_info.get('channel', 'Unknown')}\n⏱️ **Duration:** {video_info.get('duration', 'Unknown')}\n\n🎧 Enjoy!"
-                    }
-                    
-                    caption = caption_messages.get(preferred_lang, caption_messages['default'])
-                    
-                    await update.message.reply_audio(
-                        audio=audio,
-                        caption=caption,
-                        parse_mode='Markdown',
-                        reply_markup=reply_markup,
-                        title=video_info['title'],
-                        performer=video_info.get('channel', 'Unknown')
-                    )
+                    with open(audio_file, 'rb') as audio:
+                        # Create music control buttons
+                        keyboard = [
+                            [
+                                InlineKeyboardButton("⬅️", callback_data="music_prev"),
+                                InlineKeyboardButton("⏸️", callback_data="music_pause"),
+                                InlineKeyboardButton("➡️", callback_data="music_next")
+                            ],
+                            [InlineKeyboardButton("Main Menu", callback_data="main_menu")]
+                        ]
+                        
+                        # Add BROADCAST button only for admin
+                        if self.utils.is_admin(user_info['id']):
+                            keyboard.insert(1, [InlineKeyboardButton("BROADCAST", callback_data="admin_broadcast")])
+                        
+                        reply_markup = InlineKeyboardMarkup(keyboard)
+                        
+                        # Prepare caption
+                        caption_messages = {
+                            'hi': f"🎵 **{video_info['title']}**\n\n👤 **कलाकार:** {video_info.get('channel', 'Unknown')}\n⏱️ **अवधि:** {video_info.get('duration', 'Unknown')}\n\n🎧 आनंद लें!",
+                            'ur': f"🎵 **{video_info['title']}**\n\n👤 **فنکار:** {video_info.get('channel', 'Unknown')}\n⏱️ **مدت:** {video_info.get('duration', 'Unknown')}\n\n🎧 لطف اٹھائیں!",
+                            'en': f"🎵 **{video_info['title']}**\n\n👤 **Artist:** {video_info.get('channel', 'Unknown')}\n⏱️ **Duration:** {video_info.get('duration', 'Unknown')}\n\n🎧 Enjoy!",
+                            'default': f"🎵 **{video_info['title']}**\n\n👤 **Artist:** {video_info.get('channel', 'Unknown')}\n⏱️ **Duration:** {video_info.get('duration', 'Unknown')}\n\n🎧 Enjoy!"
+                        }
+                        
+                        caption = caption_messages.get(preferred_lang, caption_messages['default'])
+                        
+                        await update.message.reply_audio(
+                            audio=audio,
+                            caption=caption,
+                            parse_mode='Markdown',
+                            reply_markup=reply_markup,
+                            title=video_info['title'],
+                            performer=video_info.get('channel', 'Unknown')
+                        )
+                        
+                        logger.info(f"✅ Audio sent successfully: {video_info['title']}")
+                
+                except Exception as audio_error:
+                    logger.error(f"❌ Error sending audio: {audio_error}")
+                    await update.message.reply_text("Sorry, failed to send audio file. Please try again.")
                 
                 # Delete status message
-                await status_message.delete()
+                try:
+                    await status_message.delete()
+                except:
+                    pass
                 
                 # Clean up downloaded file
                 try:
-                    os.remove(audio_file)
-                except:
-                    pass
+                    if os.path.exists(audio_file):
+                        os.remove(audio_file)
+                        logger.info(f"🗑️ Cleaned up file: {audio_file}")
+                except Exception as cleanup_error:
+                    logger.error(f"❌ Cleanup error: {cleanup_error}")
                 
                 # Log interaction
                 self.utils.log_user_interaction(
@@ -335,6 +372,7 @@ class BotHandlers:
                 )
                 
             else:
+                logger.warning(f"❌ No music found for: '{query}'")
                 # Song not found
                 not_found_messages = {
                     'hi': f"😔 **'{query}'** नहीं मिला\n\n🔍 कृपया:\n• गाने का सही नाम लिखें\n• कलाकार का नाम भी जोड़ें\n• अंग्रेजी में भी कोशिश करें",
@@ -353,7 +391,7 @@ class BotHandlers:
                 await status_message.edit_text(not_found_msg, parse_mode='Markdown', reply_markup=reply_markup)
             
         except Exception as e:
-            logger.error(f"Music request error: {e}")
+            logger.error(f"❌ Music request error: {e}")
             
             error_messages = {
                 'hi': "😔 संगीत डाउनलोड में समस्या हुई। कृपया दोबारा कोशिश करें।",
@@ -724,10 +762,10 @@ class BotHandlers:
             elif callback_data == "start_chat":
                 # Encourage user to start chatting
                 chat_messages = {
-                    'hi': "💬 **चैट शुरू करें!**\n\nअब आप मुझसे कुछ भी पूछ सकते हैं। बस अपना सवाल टाइप करें और भेजें!\n\n🎯 मैं आपकी हर मदद के लिए तैयार हूं।",
-                    'ur': "💬 **چیٹ شروع کریں!**\n\nاب آپ مجھ سے کچھ بھی پوچھ سکتے ہیں۔ بس اپنا سوال ٹائپ کریں اور بھیجیں!\n\n🎯 میں آپ کی ہر مدد کے لیے تیار ہوں۔",
-                    'ar': "💬 **ابدأ المحادثة!**\n\nيمكنك الآن أن تسألني أي شيء. فقط اكتب سؤالك وأرسله!\n\n🎯 أنا مستعد لمساعدتك في كل شيء.",
-                    'default': "💬 **Start Chatting!**\n\nYou can now ask me anything. Just type your question and send it!\n\n🎯 I'm ready to help you with everything."
+                    'hi': "💬 **चैट शुरू करें!**\n\nअब आप मुझसे कुछ भी पूछ सकते हैं। बस अपना सवाल टाइप करें और भेजें!\n\n🎯 मैं आपकी हर मदद के लिए तैयार हूं।\n\n🎵 **Music Feature**: आप सिर्फ गाने का नाम लिखकर भी music download कर सकते हैं!",
+                    'ur': "💬 **چیٹ شروع کریں!**\n\nاب آپ مجھ سے کچھ بھی پوچھ سکتے ہیں۔ بس اپنا سوال ٹائپ کریں اور بھیجیں!\n\n🎯 میں آپ کی ہر مدد کے لیے تیار ہوں۔\n\n🎵 **Music Feature**: آپ صرف گانے کا نام لکھ کر بھی music download کر سکتے ہیں!",
+                    'ar': "💬 **ابدأ المحادثة!**\n\nيمكنك الآن أن تسألني أي شيء. فقط اكتب سؤالك وأرسله!\n\n🎯 أنا مستعد لمساعدتك في كل شيء.\n\n🎵 **Music Feature**: يمكنك تحميل الموسيقى بكتابة اسم الأغنية فقط!",
+                    'default': "💬 **Start Chatting!**\n\nYou can now ask me anything. Just type your question and send it!\n\n🎯 I'm ready to help you with everything.\n\n🎵 **Music Feature**: You can download music by just typing the song name!"
                 }
                 
                 keyboard = [
@@ -758,7 +796,7 @@ class BotHandlers:
                     'default': "⬅️ **Previous Song**\n\nThis feature is coming soon! For now, search for a new song."
                 },
                 'music_pause': {
-                    'hi': "⏸️ **پاز/प्ले**\n\nयह फीचर जल्द ही आएगा! अभी के लिए नया गाना सर्च करें।",
+                    'hi': "⏸️ **पाज/प्ले**\n\nयह फीचर जल्द ही आएगा! अभी के लिए नया गाना सर्च करें।",
                     'ur': "⏸️ **پاز/پلے**\n\nیہ فیچر جلد آئے گا! ابھی کے لیے نیا گانا سرچ کریں۔",
                     'en': "⏸️ **Pause/Play**\n\nThis feature is coming soon! For now, search for a new song.",
                     'default': "⏸️ **Pause/Play**\n\nThis feature is coming soon! For now, search for a new song."
