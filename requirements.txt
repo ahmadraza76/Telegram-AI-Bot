@@ -1,5 +1,5 @@
 # requirements.txt
-# Developer: G A RAZA
+# Developer: Mr Ahmad 
 # Premium ChatGPT-like Telegram Bot Dependencies
 
 python-telegram-bot==20.7
