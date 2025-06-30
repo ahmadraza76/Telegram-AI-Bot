@@ -39,19 +39,19 @@ class LanguageDetector:
             'pa': 'ਪੰਜਾਬੀ'
         }
         
-        # Popular Indian languages for quick selection
+        # Clean popular languages without speaker numbers
         self.popular_languages = {
-            'hi': 'Hindi (~52+ crore speakers)',
-            'bn': 'Bengali (~10+ crore speakers)',
-            'mr': 'Marathi (~9.5 crore speakers)',
-            'te': 'Telugu (~8.1 crore speakers)',
-            'ta': 'Tamil (~7.8 crore speakers)',
-            'gu': 'Gujarati (~5.5 crore speakers)',
-            'ur': 'Urdu (~5.0 crore speakers)',
-            'kn': 'Kannada (~4.5 crore speakers)',
-            'or': 'Odia (~3.5 crore speakers)',
-            'pa': 'Punjabi (~3.2 crore speakers)',
-            'en': 'English (Global)'
+            'hi': 'Hindi',
+            'bn': 'Bengali',
+            'mr': 'Marathi',
+            'te': 'Telugu',
+            'ta': 'Tamil',
+            'gu': 'Gujarati',
+            'ur': 'Urdu',
+            'kn': 'Kannada',
+            'or': 'Odia',
+            'pa': 'Punjabi',
+            'en': 'English'
         }
     
     def detect_language(self, text: str) -> str:
@@ -90,16 +90,16 @@ class LanguageDetector:
 Choose your preferred language for conversations:
 
 **Indian Languages:**
-1. Hindi (~52+ crore speakers)
-2. Bengali (~10+ crore speakers)
-3. Marathi (~9.5 crore speakers)
-4. Telugu (~8.1 crore speakers)
-5. Tamil (~7.8 crore speakers)
-6. Gujarati (~5.5 crore speakers)
-7. Urdu (~5.0 crore speakers)
-8. Kannada (~4.5 crore speakers)
-9. Odia (~3.5 crore speakers)
-10. Punjabi (~3.2 crore speakers)
+1. Hindi
+2. Bengali
+3. Marathi
+4. Telugu
+5. Tamil
+6. Gujarati
+7. Urdu
+8. Kannada
+9. Odia
+10. Punjabi
 
 **Note**: You can change language anytime using the settings menu.
 
@@ -112,16 +112,16 @@ Choose your preferred language for conversations:
 बातचीत के लिए अपनी पसंदीदा भाषा चुनें:
 
 **भारतीय भाषाएं:**
-1. Hindi (~52+ crore speakers)
-2. Bengali (~10+ crore speakers)
-3. Marathi (~9.5 crore speakers)
-4. Telugu (~8.1 crore speakers)
-5. Tamil (~7.8 crore speakers)
-6. Gujarati (~5.5 crore speakers)
-7. Urdu (~5.0 crore speakers)
-8. Kannada (~4.5 crore speakers)
-9. Odia (~3.5 crore speakers)
-10. Punjabi (~3.2 crore speakers)
+1. Hindi
+2. Bengali
+3. Marathi
+4. Telugu
+5. Tamil
+6. Gujarati
+7. Urdu
+8. Kannada
+9. Odia
+10. Punjabi
 
 **नोट**: आप सेटिंग्स मेनू का उपयोग करके कभी भी भाषा बदल सकते हैं।
 
@@ -134,16 +134,16 @@ Choose your preferred language for conversations:
 بات چیت کے لیے اپنی پسندیدہ زبان منتخب کریں:
 
 **ہندوستانی زبانیں:**
-1. Hindi (~52+ crore speakers)
-2. Bengali (~10+ crore speakers)
-3. Marathi (~9.5 crore speakers)
-4. Telugu (~8.1 crore speakers)
-5. Tamil (~7.8 crore speakers)
-6. Gujarati (~5.5 crore speakers)
-7. Urdu (~5.0 crore speakers)
-8. Kannada (~4.5 crore speakers)
-9. Odia (~3.5 crore speakers)
-10. Punjabi (~3.2 crore speakers)
+1. Hindi
+2. Bengali
+3. Marathi
+4. Telugu
+5. Tamil
+6. Gujarati
+7. Urdu
+8. Kannada
+9. Odia
+10. Punjabi
 
 **نوٹ**: آپ سیٹنگز مینو استعمال کرکے کبھی بھی زبان تبدیل کر سکتے ہیں۔
 
@@ -156,16 +156,16 @@ Choose your preferred language for conversations:
 কথোপকথনের জন্য আপনার পছন্দের ভাষা বেছে নিন:
 
 **ভারতীয় ভাষাসমূহ:**
-1. Hindi (~52+ crore speakers)
-2. Bengali (~10+ crore speakers)
-3. Marathi (~9.5 crore speakers)
-4. Telugu (~8.1 crore speakers)
-5. Tamil (~7.8 crore speakers)
-6. Gujarati (~5.5 crore speakers)
-7. Urdu (~5.0 crore speakers)
-8. Kannada (~4.5 crore speakers)
-9. Odia (~3.5 crore speakers)
-10. Punjabi (~3.2 crore speakers)
+1. Hindi
+2. Bengali
+3. Marathi
+4. Telugu
+5. Tamil
+6. Gujarati
+7. Urdu
+8. Kannada
+9. Odia
+10. Punjabi
 
 **নোট**: আপনি সেটিংস মেনু ব্যবহার করে যেকোনো সময় ভাষা পরিবর্তন করতে পারেন।
 
