@@ -1,5 +1,5 @@
 # main.py
-# Developer: Mr @Mrnick66
+# Developer: Mr Ahmad 
 # USTAAD-AI Premium Telegram Bot - Main Application
 
 import logging
@@ -63,7 +63,7 @@ class UstaadAIBot:
             logger.info(f"🎯 Starting {Config.BOT_NAME} {Config.VERSION}")
             logger.info(f"🧠 {Config.POWERED_BY}")
             logger.info(f"👨‍💻 Developer: {Config.DEVELOPER}")
-            logger.info(f"🤖 Using Groq model: {Config.DEFAULT_MODEL}")
+            logger.info(f"🤖 Using USTAAD model: {Config.DEFAULT_MODEL}")
             
             # Initialize application
             await self.application.initialize()
