@@ -1,5 +1,5 @@
 # utilities.py
-# Developer: G A RAZA
+# Developer: Mr Ahmad 
 # Utility functions for the Telegram bot
 
 import os
