@@ -9,12 +9,15 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install system dependencies
+# Install system dependencies including FFmpeg
 RUN apt-get update && apt-get install -y \
     gcc \
     g++ \
     build-essential \
     python3-dev \
+    ffmpeg \
+    wget \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Set work directory
@@ -29,7 +32,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Create necessary directories
-RUN mkdir -p logs temp
+RUN mkdir -p logs temp temp/music
 
 # Set permissions
 RUN chmod +x main.py
