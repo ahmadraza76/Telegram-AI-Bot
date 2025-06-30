@@ -40,10 +40,11 @@ class UstaadAIBot:
     
     def _setup_handlers(self):
         """Setup all bot handlers"""
-        # Command handlers - Only 3 commands total
+        # Command handlers - Only 4 commands total (including broadcast for admin)
         self.application.add_handler(CommandHandler("start", self.handlers.start_command))
         self.application.add_handler(CommandHandler("help", self.handlers.help_command))
         self.application.add_handler(CommandHandler("info", self.handlers.info_command))
+        self.application.add_handler(CommandHandler("broadcast", self.handlers.broadcast_command))
         
         # Callback query handler for inline buttons
         self.application.add_handler(CallbackQueryHandler(self.handlers.button_callback))
@@ -61,7 +62,7 @@ class UstaadAIBot:
             logger.info(f"🎯 Starting {Config.BOT_NAME} {Config.VERSION}")
             logger.info(f"🧠 {Config.POWERED_BY}")
             logger.info(f"👨‍💻 Developer: {Config.DEVELOPER}")
-            logger.info(f"🤖 Using OpenAI model: {Config.DEFAULT_MODEL}")
+            logger.info(f"🤖 Using Groq model: {Config.DEFAULT_MODEL}")
             
             # Initialize application
             await self.application.initialize()
