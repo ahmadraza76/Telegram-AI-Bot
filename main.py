@@ -30,11 +30,6 @@ class UstaadAIBot:
         # Setup directories
         Utils.setup_directories()
         
-        # Create music directory specifically
-        music_dir = os.path.join(Config.TEMP_DIR, "music")
-        os.makedirs(music_dir, exist_ok=True)
-        logger.info(f"Music directory created: {music_dir}")
-        
         # Initialize handlers
         self.handlers = BotHandlers()
         
@@ -69,14 +64,6 @@ class UstaadAIBot:
             logger.info(f"🧠 {Config.POWERED_BY}")
             logger.info(f"👨‍💻 Developer: {Config.DEVELOPER}")
             logger.info(f"🤖 Using Groq model: {Config.DEFAULT_MODEL}")
-            logger.info(f"🎵 Music feature enabled with yt-dlp")
-            
-            # Test music service initialization
-            try:
-                test_result = self.handlers.music_service.is_music_request("kesariya")
-                logger.info(f"Music service test: {test_result}")
-            except Exception as e:
-                logger.error(f"Music service initialization error: {e}")
             
             # Initialize application
             await self.application.initialize()
@@ -90,7 +77,6 @@ class UstaadAIBot:
             
             # Keep the bot running
             logger.info("🚀 Bot is now running! Press Ctrl+C to stop.")
-            logger.info("🎵 Music feature ready - users can type song names directly!")
             
             # Run until interrupted
             try:
