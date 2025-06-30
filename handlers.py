@@ -45,23 +45,29 @@ class BotHandlers:
             # Create inline keyboard - Admin gets extra BROADCAST button
             keyboard = [
                 [
-                    InlineKeyboardButton("HELP", callback_data="help"),
-                    InlineKeyboardButton("INFO", callback_data="info")
+                    InlineKeyboardButton("🆘 HELP", callback_data="help"),
+                    InlineKeyboardButton("ℹ️ INFO", callback_data="info")
                 ],
                 [
-                    InlineKeyboardButton("Language", callback_data="language_settings"),
-                    InlineKeyboardButton("MENU", callback_data="main_menu")
+                    InlineKeyboardButton("🌐 Language", callback_data="language_settings"),
+                    InlineKeyboardButton("📋 MENU", callback_data="main_menu")
                 ]
             ]
             
             # Add BROADCAST button only for admin
             if self.utils.is_admin(user_info['id']):
-                keyboard.insert(1, [InlineKeyboardButton("BROADCAST", callback_data="admin_broadcast")])
+                keyboard.insert(1, [InlineKeyboardButton("📢 BROADCAST", callback_data="admin_broadcast")])
             
             reply_markup = InlineKeyboardMarkup(keyboard)
             
             # Send welcome message
-            full_message = f"{welcome_data['welcome']}\n\n{welcome_data['description']}\n\n{welcome_data['start_chat']}"
+            full_message = f"""
+✨ {welcome_data['welcome']}
+
+🌟 {welcome_data['description']}
+
+💬 {welcome_data['start_chat']}
+"""
             
             await update.message.reply_text(
                 full_message,
@@ -78,9 +84,9 @@ class BotHandlers:
             )
             
         except Exception as e:
-            logger.error(f"Error in start_command: {e}")
-            await update.message.reply_text("Sorry, something went wrong. Please try again.")
-    
+            logger.error(f"❌ Error in start_command: {e}")
+            await update.message.reply_text("⚠️ Sorry, something went wrong. Please try again.")
+
     async def help_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Handle /help command"""
         try:
@@ -99,7 +105,7 @@ class BotHandlers:
             
             # Add back button
             keyboard = [
-                [InlineKeyboardButton("Back to Menu", callback_data="main_menu")]
+                [InlineKeyboardButton("🔙 Back to Menu", callback_data="main_menu")]
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
             
@@ -117,9 +123,9 @@ class BotHandlers:
             )
             
         except Exception as e:
-            logger.error(f"Error in help_command: {e}")
-            await update.message.reply_text("Sorry, couldn't load help. Please try again.")
-    
+            logger.error(f"❌ Error in help_command: {e}")
+            await update.message.reply_text("⚠️ Sorry, couldn't load help. Please try again.")
+
     async def info_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Handle /info command"""
         try:
@@ -138,7 +144,7 @@ class BotHandlers:
             
             # Add back button
             keyboard = [
-                [InlineKeyboardButton("Back to Menu", callback_data="main_menu")]
+                [InlineKeyboardButton("🔙 Back to Menu", callback_data="main_menu")]
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
             
@@ -156,9 +162,9 @@ class BotHandlers:
             )
             
         except Exception as e:
-            logger.error(f"Error in info_command: {e}")
-            await update.message.reply_text("Sorry, couldn't load info. Please try again.")
-    
+            logger.error(f"❌ Error in info_command: {e}")
+            await update.message.reply_text("⚠️ Sorry, couldn't load info. Please try again.")
+
     async def broadcast_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Handle /broadcast command - Admin only"""
         try:
@@ -166,7 +172,7 @@ class BotHandlers:
             
             # Check if user is admin
             if not self.utils.is_admin(user_info['id']):
-                await update.message.reply_text("❌ Access Denied: Admin privileges required.")
+                await update.message.reply_text("🚫 Access Denied: Admin privileges required.")
                 return
             
             # Get broadcast message from command
@@ -182,11 +188,18 @@ class BotHandlers:
                         InlineKeyboardButton("✅ Confirm Broadcast", callback_data="confirm_broadcast"),
                         InlineKeyboardButton("❌ Cancel", callback_data="cancel_broadcast")
                     ],
-                    [InlineKeyboardButton("Back to Menu", callback_data="main_menu")]
+                    [InlineKeyboardButton("🔙 Back to Menu", callback_data="main_menu")]
                 ]
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 
-                preview_message = f"📢 **Broadcast Preview**\n\n**Message:**\n{broadcast_message}\n\n**Ready to send to all users?**"
+                preview_message = f"""
+📢 **Broadcast Preview**
+
+📝 **Message:**
+{broadcast_message}
+
+❓ **Ready to send to all users?**
+"""
                 
                 await update.message.reply_text(
                     preview_message,
@@ -195,14 +208,21 @@ class BotHandlers:
                 )
             else:
                 await update.message.reply_text(
-                    "📢 **Broadcast Usage:**\n\n`/broadcast <your message here>`\n\n**Example:**\n`/broadcast Hello everyone! New features added!`",
+                    """
+📢 **Broadcast Usage**
+
+📌 `/broadcast <your message here>`
+
+💡 **Example:**
+`/broadcast Hello everyone! New features added!`
+""",
                     parse_mode='Markdown'
                 )
             
         except Exception as e:
-            logger.error(f"Error in broadcast_command: {e}")
-            await update.message.reply_text("Sorry, broadcast command failed. Please try again.")
-    
+            logger.error(f"❌ Error in broadcast_command: {e}")
+            await update.message.reply_text("⚠️ Sorry, broadcast command failed. Please try again.")
+
     async def handle_message(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Handle all text messages with AI response"""
         try:
@@ -230,22 +250,22 @@ class BotHandlers:
             preferred_lang = self.user_preferences.get_user_language(user_info['id']) or 'en'
             
             error_messages = {
-                'hi': "माफ़ करें, कुछ गलत हुआ है। कृपया दोबारा कोशिश करें। 🙏",
-                'ur': "معذرت، کچھ غلط ہوا ہے۔ براہ کرم دوبارہ کوشش کریں۔ 🙏",
-                'ar': "عذراً، حدث خطأ ما. يرجى المحاولة مرة أخرى. 🙏",
-                'default': "Sorry, something went wrong. Please try again. 🙏"
+                'hi': "🙏 माफ़ करें, कुछ गलत हुआ है। कृपया दोबारा कोशिश करें।",
+                'ur': "🙏 معذرت، کچھ غلط ہوا ہے۔ براہ کرم دوبارہ کوشش کریں۔",
+                'ar': "🙏 عذراً، حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+                'default': "🙏 Sorry, something went wrong. Please try again."
             }
             
             error_msg = error_messages.get(preferred_lang, error_messages['default'])
             
             # Add menu button even for error messages
             keyboard = [
-                [InlineKeyboardButton("Main Menu", callback_data="main_menu")]
+                [InlineKeyboardButton("📋 Main Menu", callback_data="main_menu")]
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
             
             await update.message.reply_text(error_msg, reply_markup=reply_markup)
-    
+
     async def handle_ai_response(self, update: Update, context: ContextTypes.DEFAULT_TYPE,
                                user_message: str, user_info: dict, preferred_lang: str):
         """Handle AI response"""
@@ -269,14 +289,14 @@ class BotHandlers:
             # Create keyboard - Admin gets BROADCAST button
             keyboard = [
                 [
-                    InlineKeyboardButton("MENU", callback_data="main_menu"),
-                    InlineKeyboardButton("Language", callback_data="language_settings")
+                    InlineKeyboardButton("📋 MENU", callback_data="main_menu"),
+                    InlineKeyboardButton("🌐 Language", callback_data="language_settings")
                 ]
             ]
             
             # Add BROADCAST button only for admin
             if self.utils.is_admin(user_info['id']):
-                keyboard.insert(0, [InlineKeyboardButton("BROADCAST", callback_data="admin_broadcast")])
+                keyboard.insert(0, [InlineKeyboardButton("📢 BROADCAST", callback_data="admin_broadcast")])
             
             reply_markup = InlineKeyboardMarkup(keyboard)
             
@@ -303,9 +323,9 @@ class BotHandlers:
             )
             
         except Exception as e:
-            logger.error(f"AI response error: {e}")
+            logger.error(f"❌ AI response error: {e}")
             raise
-    
+
     async def button_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Handle inline button callbacks"""
         try:
@@ -328,22 +348,28 @@ class BotHandlers:
                 
                 keyboard = [
                     [
-                        InlineKeyboardButton("HELP", callback_data="help"),
-                        InlineKeyboardButton("INFO", callback_data="info")
+                        InlineKeyboardButton("🆘 HELP", callback_data="help"),
+                        InlineKeyboardButton("ℹ️ INFO", callback_data="info")
                     ],
                     [
-                        InlineKeyboardButton("Language", callback_data="language_settings"),
-                        InlineKeyboardButton("Start Chat", callback_data="start_chat")
+                        InlineKeyboardButton("🌐 Language", callback_data="language_settings"),
+                        InlineKeyboardButton("💬 Start Chat", callback_data="start_chat")
                     ]
                 ]
                 
                 # Add BROADCAST button only for admin
                 if self.utils.is_admin(user_info['id']):
-                    keyboard.insert(1, [InlineKeyboardButton("BROADCAST", callback_data="admin_broadcast")])
+                    keyboard.insert(1, [InlineKeyboardButton("📢 BROADCAST", callback_data="admin_broadcast")])
                 
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 
-                menu_message = f"**Main Menu**\n\n{welcome_data['welcome']}\n\n{welcome_data['start_chat']}"
+                menu_message = f"""
+📋 **Main Menu**
+
+{welcome_data['welcome']}
+
+💬 {welcome_data['start_chat']}
+"""
                 
                 await query.edit_message_text(
                     menu_message, 
@@ -354,23 +380,25 @@ class BotHandlers:
             elif callback_data == "admin_broadcast":
                 # Admin broadcast panel
                 if not self.utils.is_admin(user_info['id']):
-                    await query.edit_message_text("❌ Access Denied: Admin privileges required.")
+                    await query.edit_message_text("🚫 Access Denied: Admin privileges required.")
                     return
                 
-                broadcast_panel = f"""📢 **Admin Broadcast Panel**
+                broadcast_panel = f"""
+📢 **Admin Broadcast Panel**
 
-**Choose an option:**
+🔹 **Choose an option:**
 
-• **Type Message**: Send broadcast to all users
-• **Broadcast Stats**: View broadcast statistics
+• ✍️ Type Message: Send broadcast to all users
+• 📊 Broadcast Stats: View broadcast statistics
 
-**Admin**: {Config.DEVELOPER}
-**System**: {Config.BOT_NAME} {Config.VERSION}"""
+👤 **Admin**: {Config.DEVELOPER}
+🤖 **System**: {Config.BOT_NAME} {Config.VERSION}
+"""
                 
                 keyboard = [
-                    [InlineKeyboardButton("📝 Type Message", callback_data="broadcast_type")],
+                    [InlineKeyboardButton("✍️ Type Message", callback_data="broadcast_type")],
                     [InlineKeyboardButton("📊 Broadcast Stats", callback_data="broadcast_stats")],
-                    [InlineKeyboardButton("Back to Menu", callback_data="main_menu")]
+                    [InlineKeyboardButton("🔙 Back to Menu", callback_data="main_menu")]
                 ]
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 
@@ -383,24 +411,26 @@ class BotHandlers:
             elif callback_data == "broadcast_type":
                 # Admin only
                 if not self.utils.is_admin(user_info['id']):
-                    await query.edit_message_text("❌ Access Denied: Admin privileges required.")
+                    await query.edit_message_text("🚫 Access Denied: Admin privileges required.")
                     return
                 
-                type_message = """📝 **Type Broadcast Message**
+                type_message = """
+📝 **Type Broadcast Message**
 
-**Instructions:**
+📌 **Instructions:**
 1. Use command: `/broadcast <your message>`
 2. Example: `/broadcast Hello everyone! New features added!`
 3. Message will be sent to all users
 
-**Tips:**
+💡 **Tips:**
 • Keep messages clear and concise
 • Use proper formatting for better readability
-• Preview will be shown before sending"""
+• Preview will be shown before sending
+"""
                 
                 keyboard = [
-                    [InlineKeyboardButton("Back to Broadcast", callback_data="admin_broadcast")],
-                    [InlineKeyboardButton("Main Menu", callback_data="main_menu")]
+                    [InlineKeyboardButton("🔙 Back to Broadcast", callback_data="admin_broadcast")],
+                    [InlineKeyboardButton("📋 Main Menu", callback_data="main_menu")]
                 ]
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 
@@ -413,27 +443,29 @@ class BotHandlers:
             elif callback_data == "broadcast_stats":
                 # Admin only
                 if not self.utils.is_admin(user_info['id']):
-                    await query.edit_message_text("❌ Access Denied: Admin privileges required.")
+                    await query.edit_message_text("🚫 Access Denied: Admin privileges required.")
                     return
                 
-                stats_message = f"""📊 **Broadcast Statistics**
+                stats_message = f"""
+📊 **Broadcast Statistics**
 
-**System Info:**
+🤖 **System Info:**
 • Bot Name: {Config.BOT_NAME}
 • Version: {Config.VERSION}
 • Developer: {Config.DEVELOPER}
 
-**Broadcast Features:**
-• ✅ Admin-only access
-• ✅ Message preview system
-• ✅ Confirmation workflow
-• ✅ Secure broadcasting
+✅ **Broadcast Features:**
+• Admin-only access
+• Message preview system
+• Confirmation workflow
+• Secure broadcasting
 
-**Status**: Ready for broadcasting"""
+🟢 **Status**: Ready for broadcasting
+"""
                 
                 keyboard = [
-                    [InlineKeyboardButton("Back to Broadcast", callback_data="admin_broadcast")],
-                    [InlineKeyboardButton("Main Menu", callback_data="main_menu")]
+                    [InlineKeyboardButton("🔙 Back to Broadcast", callback_data="admin_broadcast")],
+                    [InlineKeyboardButton("📋 Main Menu", callback_data="main_menu")]
                 ]
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 
@@ -446,7 +478,7 @@ class BotHandlers:
             elif callback_data == "confirm_broadcast":
                 # Admin only - Confirm and send broadcast
                 if not self.utils.is_admin(user_info['id']):
-                    await query.edit_message_text("❌ Access Denied: Admin privileges required.")
+                    await query.edit_message_text("🚫 Access Denied: Admin privileges required.")
                     return
                 
                 if user_info['id'] in self.broadcast_messages:
@@ -454,17 +486,20 @@ class BotHandlers:
                     
                     # Here you would implement actual broadcasting to all users
                     # For now, we'll show a success message
-                    success_message = f"""✅ **Broadcast Sent Successfully!**
+                    success_message = f"""
+✅ **Broadcast Sent Successfully!**
 
-**Message:** {broadcast_msg}
+📝 **Message:** 
+{broadcast_msg}
 
-**Status:** Delivered to all users
-**Time:** Just now
-**Admin:** {Config.DEVELOPER}"""
+🟢 **Status:** Delivered to all users
+🕒 **Time:** Just now
+👤 **Admin:** {Config.DEVELOPER}
+"""
                     
                     keyboard = [
-                        [InlineKeyboardButton("Send Another", callback_data="admin_broadcast")],
-                        [InlineKeyboardButton("Main Menu", callback_data="main_menu")]
+                        [InlineKeyboardButton("✍️ Send Another", callback_data="admin_broadcast")],
+                        [InlineKeyboardButton("📋 Main Menu", callback_data="main_menu")]
                     ]
                     reply_markup = InlineKeyboardMarkup(keyboard)
                     
@@ -477,23 +512,27 @@ class BotHandlers:
                     # Clear stored message
                     del self.broadcast_messages[user_info['id']]
                 else:
-                    await query.edit_message_text("❌ No broadcast message found. Please try again.")
+                    await query.edit_message_text("⚠️ No broadcast message found. Please try again.")
             
             elif callback_data == "cancel_broadcast":
                 # Admin only - Cancel broadcast
                 if not self.utils.is_admin(user_info['id']):
-                    await query.edit_message_text("❌ Access Denied: Admin privileges required.")
+                    await query.edit_message_text("🚫 Access Denied: Admin privileges required.")
                     return
                 
                 # Clear stored message
                 if user_info['id'] in self.broadcast_messages:
                     del self.broadcast_messages[user_info['id']]
                 
-                cancel_message = "❌ **Broadcast Cancelled**\n\nBroadcast message has been cancelled and not sent."
+                cancel_message = """
+❌ **Broadcast Cancelled**
+
+Broadcast message has been cancelled and not sent.
+"""
                 
                 keyboard = [
-                    [InlineKeyboardButton("Back to Broadcast", callback_data="admin_broadcast")],
-                    [InlineKeyboardButton("Main Menu", callback_data="main_menu")]
+                    [InlineKeyboardButton("🔙 Back to Broadcast", callback_data="admin_broadcast")],
+                    [InlineKeyboardButton("📋 Main Menu", callback_data="main_menu")]
                 ]
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 
@@ -525,7 +564,7 @@ class BotHandlers:
                     keyboard.append(row)
                 
                 # Add back button
-                keyboard.append([InlineKeyboardButton("Back to Menu", callback_data="main_menu")])
+                keyboard.append([InlineKeyboardButton("🔙 Back to Menu", callback_data="main_menu")])
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 
                 await query.edit_message_text(
@@ -541,24 +580,84 @@ class BotHandlers:
                 
                 # Show confirmation message
                 confirmations = {
-                    'en': f"✅ **Language Updated!**\n\nYour language has been set to **English**.\n\nAll future conversations will be in English.",
-                    'hi': f"✅ **भाषा अपडेट हो गई!**\n\nआपकी भाषा **हिंदी** में सेट कर दी गई है।\n\nभविष्य की सभी बातचीत हिंदी में होगी।",
-                    'ur': f"✅ **زبان اپڈیٹ ہو گئی!**\n\nآپ کی زبان **اردو** میں سیٹ کر دی گئی ہے۔\n\nمستقبل کی تمام گفتگو اردو میں ہوگی۔",
-                    'ar': f"✅ **تم تحديث اللغة!**\n\nتم تعيين لغتك إلى **العربية**.\n\nجميع المحادثات المستقبلية ستكون بالعربية.",
-                    'es': f"✅ **¡Idioma Actualizado!**\n\nTu idioma ha sido configurado a **Español**.\n\nTodas las conversaciones futuras serán en español.",
-                    'fr': f"✅ **Langue Mise à Jour!**\n\nVotre langue a été définie sur **Français**.\n\nToutes les conversations futures seront en français.",
-                    'de': f"✅ **Sprache Aktualisiert!**\n\nIhre Sprache wurde auf **Deutsch** eingestellt.\n\nAlle zukünftigen Gespräche werden auf Deutsch sein.",
-                    'ru': f"✅ **Язык Обновлен!**\n\nВаш язык установлен на **Русский**.\n\nВсе будущие разговоры будут на русском языке.",
-                    'ja': f"✅ **言語が更新されました！**\n\nあなたの言語は**日本語**に設定されました。\n\n今後のすべての会話は日本語で行われます。",
-                    'zh': f"✅ **语言已更新！**\n\n您的语言已设置为**中文**。\n\n未来的所有对话都将使用中文。"
+                    'en': f"""
+✅ **Language Updated!**
+
+Your language has been set to **English**.
+
+All future conversations will be in English.
+""",
+                    'hi': f"""
+✅ **भाषा अपडेट हो गई!**
+
+आपकी भाषा **हिंदी** में सेट कर दी गई है।
+
+भविष्य की सभी बातचीत हिंदी में होगी।
+""",
+                    'ur': f"""
+✅ **زبان اپڈیٹ ہو گئی!**
+
+آپ کی زبان **اردو** میں سیٹ کر دی گئی ہے۔
+
+مستقبل کی تمام گفتگو اردو میں ہوگی۔
+""",
+                    'ar': f"""
+✅ **تم تحديث اللغة!**
+
+تم تعيين لغتك إلى **العربية**.
+
+جميع المحادثات المستقبلية ستكون بالعربية.
+""",
+                    'es': f"""
+✅ **¡Idioma Actualizado!**
+
+Tu idioma ha sido configurado a **Español**.
+
+Todas las conversaciones futuras serán en español.
+""",
+                    'fr': f"""
+✅ **Langue Mise à Jour!**
+
+Votre langue a été définie sur **Français**.
+
+Toutes les conversations futures seront en français.
+""",
+                    'de': f"""
+✅ **Sprache Aktualisiert!**
+
+Ihre Sprache wurde auf **Deutsch** eingestellt.
+
+Alle zukünftigen Gespräche werden auf Deutsch sein.
+""",
+                    'ru': f"""
+✅ **Язык Обновлен!**
+
+Ваш язык установлен на **Русский**.
+
+Все будущие разговоры будут на русском языке.
+""",
+                    'ja': f"""
+✅ **言語が更新されました！**
+
+あなたの言語は**日本語**に設定されました。
+
+今後のすべての会話は日本語で行われます。
+""",
+                    'zh': f"""
+✅ **语言已更新！**
+
+您的语言已设置为**中文**。
+
+未来的所有对话都将使用中文。
+"""
                 }
                 
                 confirmation_msg = confirmations.get(new_lang, confirmations['en'])
                 
                 keyboard = [
                     [
-                        InlineKeyboardButton("Back to Settings", callback_data="language_settings"),
-                        InlineKeyboardButton("Main Menu", callback_data="main_menu")
+                        InlineKeyboardButton("🔙 Back to Settings", callback_data="language_settings"),
+                        InlineKeyboardButton("📋 Main Menu", callback_data="main_menu")
                     ]
                 ]
                 reply_markup = InlineKeyboardMarkup(keyboard)
@@ -573,7 +672,7 @@ class BotHandlers:
                 help_message = self.language_detector.get_help_message(preferred_lang)
                 
                 keyboard = [
-                    [InlineKeyboardButton("Back to Menu", callback_data="main_menu")]
+                    [InlineKeyboardButton("🔙 Back to Menu", callback_data="main_menu")]
                 ]
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 
@@ -587,7 +686,7 @@ class BotHandlers:
                 info_message = self.language_detector.get_info_message(preferred_lang)
                 
                 keyboard = [
-                    [InlineKeyboardButton("Back to Menu", callback_data="main_menu")]
+                    [InlineKeyboardButton("🔙 Back to Menu", callback_data="main_menu")]
                 ]
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 
@@ -600,14 +699,38 @@ class BotHandlers:
             elif callback_data == "start_chat":
                 # Encourage user to start chatting
                 chat_messages = {
-                    'hi': "💬 **चैट शुरू करें!**\n\nअब आप मुझसे कुछ भी पूछ सकते हैं। बस अपना सवाल टाइप करें और भेजें!\n\n🎯 मैं आपकी हर मदद के लिए तैयार हूं।",
-                    'ur': "💬 **چیٹ شروع کریں!**\n\nاب آپ مجھ سے کچھ بھی پوچھ سکتے ہیں۔ بس اپنا سوال ٹائپ کریں اور بھیجیں!\n\n🎯 میں آپ کی ہر مدد کے لیے تیار ہوں۔",
-                    'ar': "💬 **ابدأ المحادثة!**\n\nيمكنك الآن أن تسألني أي شيء. فقط اكتب سؤالك وأرسله!\n\n🎯 أنا مستعد لمساعدتك في كل شيء.",
-                    'default': "💬 **Start Chatting!**\n\nYou can now ask me anything. Just type your question and send it!\n\n🎯 I'm ready to help you with everything."
+                    'hi': """
+💬 **चैट शुरू करें!**
+
+अब आप मुझसे कुछ भी पूछ सकते हैं। बस अपना सवाल टाइप करें और भेजें!
+
+🎯 मैं आपकी हर मदद के लिए तैयार हूं।
+""",
+                    'ur': """
+💬 **چیٹ شروع کریں!**
+
+اب آپ مجھ سے کچھ بھی پوچھ سکتے ہیں۔ بس اپنا سوال ٹائپ کریں اور بھیجیں!
+
+🎯 میں آپ کی ہر مدد کے لیے تیار ہوں۔
+""",
+                    'ar': """
+💬 **ابدأ المحادثة!**
+
+يمكنك الآن أن تسألني أي شيء. فقط اكتب سؤالك وأرسله!
+
+🎯 أنا مستعد لمساعدتك في كل شيء.
+""",
+                    'default': """
+💬 **Start Chatting!**
+
+You can now ask me anything. Just type your question and send it!
+
+🎯 I'm ready to help you with everything.
+"""
                 }
                 
                 keyboard = [
-                    [InlineKeyboardButton("Back to Menu", callback_data="main_menu")]
+                    [InlineKeyboardButton("🔙 Back to Menu", callback_data="main_menu")]
                 ]
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 
@@ -620,5 +743,5 @@ class BotHandlers:
                 )
             
         except Exception as e:
-            logger.error(f"Error in button_callback: {e}")
-            await query.edit_message_text("Sorry, something went wrong with that action.")
+            logger.error(f"❌ Error in button_callback: {e}")
+            await query.edit_message_text("⚠️ Sorry, something went wrong with that action.")
