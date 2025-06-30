@@ -8,6 +8,7 @@ from telegram.ext import ContextTypes
 from ai_service import AIService
 from language_detector import LanguageDetector
 from user_preferences import UserPreferences
+from music_service import MusicService
 from utils import Utils
 from config import Config
 
@@ -18,6 +19,7 @@ class BotHandlers:
         self.ai_service = AIService()
         self.language_detector = LanguageDetector()
         self.user_preferences = UserPreferences()
+        self.music_service = MusicService()
         self.utils = Utils()
         self.broadcast_messages = {}  # Store broadcast messages temporarily
     
@@ -201,7 +203,7 @@ class BotHandlers:
             await update.message.reply_text("Sorry, broadcast command failed. Please try again.")
     
     async def handle_message(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        """Handle all text messages with AI response"""
+        """Handle all text messages with AI response or music download"""
         try:
             user_info = self.utils.get_user_info(update)
             user_message = update.message.text
@@ -214,6 +216,159 @@ class BotHandlers:
                 self.user_preferences.set_user_language(user_info['id'], detected_lang)
                 preferred_lang = detected_lang
             
+            # Check if this is a music request
+            if self.music_service.is_music_request(user_message):
+                await self.handle_music_request(update, context, user_message, user_info, preferred_lang)
+                return
+            
+            # Regular AI response
+            await self.handle_ai_response(update, context, user_message, user_info, preferred_lang)
+            
+        except Exception as e:
+            logger.error(f"Error in handle_message: {e}")
+            
+            # Get user's preferred language for error message
+            user_info = self.utils.get_user_info(update)
+            preferred_lang = self.user_preferences.get_user_language(user_info['id']) or 'en'
+            
+            error_messages = {
+                'hi': "माफ़ करें, कुछ गलत हुआ है। कृपया दोबारा कोशिश करें। 🙏",
+                'ur': "معذرت، کچھ غلط ہوا ہے۔ براہ کرم دوبارہ کوشش کریں۔ 🙏",
+                'ar': "عذراً، حدث خطأ ما. يرجى المحاولة مرة أخرى. 🙏",
+                'default': "Sorry, something went wrong. Please try again. 🙏"
+            }
+            
+            error_msg = error_messages.get(preferred_lang, error_messages['default'])
+            
+            # Add menu button even for error messages
+            keyboard = [
+                [InlineKeyboardButton("Main Menu", callback_data="main_menu")]
+            ]
+            reply_markup = InlineKeyboardMarkup(keyboard)
+            
+            await update.message.reply_text(error_msg, reply_markup=reply_markup)
+    
+    async def handle_music_request(self, update: Update, context: ContextTypes.DEFAULT_TYPE, 
+                                 query: str, user_info: dict, preferred_lang: str):
+        """Handle music download request"""
+        try:
+            # Show searching message
+            search_messages = {
+                'hi': f"🎵 **'{query}'** खोज रहा हूं...\n\n⏳ कृपया प्रतीक्षा करें, मैं आपके लिए बेहतरीन गाना ढूंढ रहा हूं!",
+                'ur': f"🎵 **'{query}'** تلاش کر رہا ہوں...\n\n⏳ براہ کرم انتظار کریں، میں آپ کے لیے بہترین گانا تلاش کر رہا ہوں!",
+                'en': f"🎵 Searching for **'{query}'**...\n\n⏳ Please wait, finding the best song for you!",
+                'default': f"🎵 Searching for **'{query}'**...\n\n⏳ Please wait, finding the best song for you!"
+            }
+            
+            search_msg = search_messages.get(preferred_lang, search_messages['default'])
+            status_message = await update.message.reply_text(search_msg, parse_mode='Markdown')
+            
+            # Process music request
+            result = await self.music_service.process_music_request(query)
+            
+            if result:
+                audio_file, video_info = result
+                
+                # Update status to downloading
+                download_messages = {
+                    'hi': f"🎵 **{video_info['title']}**\n\n⬇️ डाउनलोड हो रहा है... कृपया प्रतीक्षा करें!",
+                    'ur': f"🎵 **{video_info['title']}**\n\n⬇️ ڈاؤن لوڈ ہو رہا ہے... براہ کرم انتظار کریں!",
+                    'en': f"🎵 **{video_info['title']}**\n\n⬇️ Downloading... Please wait!",
+                    'default': f"🎵 **{video_info['title']}**\n\n⬇️ Downloading... Please wait!"
+                }
+                
+                download_msg = download_messages.get(preferred_lang, download_messages['default'])
+                await status_message.edit_text(download_msg, parse_mode='Markdown')
+                
+                # Send audio file
+                with open(audio_file, 'rb') as audio:
+                    # Create music control buttons
+                    keyboard = [
+                        [
+                            InlineKeyboardButton("⬅️", callback_data="music_prev"),
+                            InlineKeyboardButton("⏸️", callback_data="music_pause"),
+                            InlineKeyboardButton("➡️", callback_data="music_next")
+                        ],
+                        [InlineKeyboardButton("Main Menu", callback_data="main_menu")]
+                    ]
+                    
+                    # Add BROADCAST button only for admin
+                    if self.utils.is_admin(user_info['id']):
+                        keyboard.insert(1, [InlineKeyboardButton("BROADCAST", callback_data="admin_broadcast")])
+                    
+                    reply_markup = InlineKeyboardMarkup(keyboard)
+                    
+                    # Prepare caption
+                    caption_messages = {
+                        'hi': f"🎵 **{video_info['title']}**\n\n👤 **कलाकार:** {video_info.get('channel', 'Unknown')}\n⏱️ **अवधि:** {video_info.get('duration', 'Unknown')}\n\n🎧 आनंद लें!",
+                        'ur': f"🎵 **{video_info['title']}**\n\n👤 **فنکار:** {video_info.get('channel', 'Unknown')}\n⏱️ **مدت:** {video_info.get('duration', 'Unknown')}\n\n🎧 لطف اٹھائیں!",
+                        'en': f"🎵 **{video_info['title']}**\n\n👤 **Artist:** {video_info.get('channel', 'Unknown')}\n⏱️ **Duration:** {video_info.get('duration', 'Unknown')}\n\n🎧 Enjoy!",
+                        'default': f"🎵 **{video_info['title']}**\n\n👤 **Artist:** {video_info.get('channel', 'Unknown')}\n⏱️ **Duration:** {video_info.get('duration', 'Unknown')}\n\n🎧 Enjoy!"
+                    }
+                    
+                    caption = caption_messages.get(preferred_lang, caption_messages['default'])
+                    
+                    await update.message.reply_audio(
+                        audio=audio,
+                        caption=caption,
+                        parse_mode='Markdown',
+                        reply_markup=reply_markup,
+                        title=video_info['title'],
+                        performer=video_info.get('channel', 'Unknown')
+                    )
+                
+                # Delete status message
+                await status_message.delete()
+                
+                # Clean up downloaded file
+                try:
+                    os.remove(audio_file)
+                except:
+                    pass
+                
+                # Log interaction
+                self.utils.log_user_interaction(
+                    user_info['id'],
+                    user_info['username'],
+                    f"Music: {query}",
+                    len(video_info['title'])
+                )
+                
+            else:
+                # Song not found
+                not_found_messages = {
+                    'hi': f"😔 **'{query}'** नहीं मिला\n\n🔍 कृपया:\n• गाने का सही नाम लिखें\n• कलाकार का नाम भी जोड़ें\n• अंग्रेजी में भी कोशिश करें",
+                    'ur': f"😔 **'{query}'** نہیں ملا\n\n🔍 براہ کرم:\n• گانے کا صحیح نام لکھیں\n• فنکار کا نام بھی شامل کریں\n• انگریزی میں بھی کوشش کریں",
+                    'en': f"😔 **'{query}'** not found\n\n🔍 Please try:\n• Correct song name\n• Add artist name\n• Try in English",
+                    'default': f"😔 **'{query}'** not found\n\n🔍 Please try:\n• Correct song name\n• Add artist name\n• Try in English"
+                }
+                
+                not_found_msg = not_found_messages.get(preferred_lang, not_found_messages['default'])
+                
+                keyboard = [
+                    [InlineKeyboardButton("Main Menu", callback_data="main_menu")]
+                ]
+                reply_markup = InlineKeyboardMarkup(keyboard)
+                
+                await status_message.edit_text(not_found_msg, parse_mode='Markdown', reply_markup=reply_markup)
+            
+        except Exception as e:
+            logger.error(f"Music request error: {e}")
+            
+            error_messages = {
+                'hi': "😔 संगीत डाउनलोड में समस्या हुई। कृपया दोबारा कोशिश करें।",
+                'ur': "😔 موسیقی ڈاؤن لوڈ میں مسئلہ ہوا۔ براہ کرم دوبارہ کوشش کریں۔",
+                'en': "😔 Music download failed. Please try again.",
+                'default': "😔 Music download failed. Please try again."
+            }
+            
+            error_msg = error_messages.get(preferred_lang, error_messages['default'])
+            await update.message.reply_text(error_msg)
+    
+    async def handle_ai_response(self, update: Update, context: ContextTypes.DEFAULT_TYPE,
+                               user_message: str, user_info: dict, preferred_lang: str):
+        """Handle regular AI response"""
+        try:
             # Simulate typing
             await self.utils.simulate_typing(update.effective_chat.id, context, duration=3)
             
@@ -267,28 +422,8 @@ class BotHandlers:
             )
             
         except Exception as e:
-            logger.error(f"Error in handle_message: {e}")
-            
-            # Get user's preferred language for error message
-            user_info = self.utils.get_user_info(update)
-            preferred_lang = self.user_preferences.get_user_language(user_info['id']) or 'en'
-            
-            error_messages = {
-                'hi': "माफ़ करें, कुछ गलत हुआ है। कृपया दोबारा कोशिश करें। 🙏",
-                'ur': "معذرت، کچھ غلط ہوا ہے۔ براہ کرم دوبارہ کوشش کریں۔ 🙏",
-                'ar': "عذراً، حدث خطأ ما. يرجى المحاولة مرة أخرى. 🙏",
-                'default': "Sorry, something went wrong. Please try again. 🙏"
-            }
-            
-            error_msg = error_messages.get(preferred_lang, error_messages['default'])
-            
-            # Add menu button even for error messages
-            keyboard = [
-                [InlineKeyboardButton("Main Menu", callback_data="main_menu")]
-            ]
-            reply_markup = InlineKeyboardMarkup(keyboard)
-            
-            await update.message.reply_text(error_msg, reply_markup=reply_markup)
+            logger.error(f"AI response error: {e}")
+            raise
     
     async def button_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Handle inline button callbacks"""
@@ -305,6 +440,11 @@ class BotHandlers:
                 preferred_lang = self.language_detector.detect_language(
                     query.message.text or user_info.get('language_code', 'en')
                 )
+            
+            # Handle music control buttons
+            if callback_data.startswith("music_"):
+                await self.handle_music_controls(query, callback_data, preferred_lang)
+                return
             
             if callback_data == "main_menu":
                 # Show main menu
@@ -606,3 +746,36 @@ class BotHandlers:
         except Exception as e:
             logger.error(f"Error in button_callback: {e}")
             await query.edit_message_text("Sorry, something went wrong with that action.")
+    
+    async def handle_music_controls(self, query, callback_data: str, preferred_lang: str):
+        """Handle music control button presses"""
+        try:
+            control_messages = {
+                'music_prev': {
+                    'hi': "⬅️ **पिछला गाना**\n\nयह फीचर जल्द ही आएगा! अभी के लिए नया गाना सर्च करें।",
+                    'ur': "⬅️ **پچھلا گانا**\n\nیہ فیچر جلد آئے گا! ابھی کے لیے نیا گانا سرچ کریں۔",
+                    'en': "⬅️ **Previous Song**\n\nThis feature is coming soon! For now, search for a new song.",
+                    'default': "⬅️ **Previous Song**\n\nThis feature is coming soon! For now, search for a new song."
+                },
+                'music_pause': {
+                    'hi': "⏸️ **پاز/प्ले**\n\nयह फीचर जल्द ही आएगा! अभी के लिए नया गाना सर्च करें।",
+                    'ur': "⏸️ **پاز/پلے**\n\nیہ فیچر جلد آئے گا! ابھی کے لیے نیا گانا سرچ کریں۔",
+                    'en': "⏸️ **Pause/Play**\n\nThis feature is coming soon! For now, search for a new song.",
+                    'default': "⏸️ **Pause/Play**\n\nThis feature is coming soon! For now, search for a new song."
+                },
+                'music_next': {
+                    'hi': "➡️ **अगला गाना**\n\nयह फीचर जल्द ही आएगा! अभी के लिए नया गाना सर्च करें।",
+                    'ur': "➡️ **اگلا گانا**\n\nیہ فیچر جلد آئے گا! ابھی کے لیے نیا گانا سرچ کریں۔",
+                    'en': "➡️ **Next Song**\n\nThis feature is coming soon! For now, search for a new song.",
+                    'default': "➡️ **Next Song**\n\nThis feature is coming soon! For now, search for a new song."
+                }
+            }
+            
+            message_data = control_messages.get(callback_data, control_messages['music_pause'])
+            message = message_data.get(preferred_lang, message_data['default'])
+            
+            await query.answer(message, show_alert=True)
+            
+        except Exception as e:
+            logger.error(f"Music control error: {e}")
+            await query.answer("Control not available", show_alert=True)
