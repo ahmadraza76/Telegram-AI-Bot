@@ -1,5 +1,5 @@
 # handlers.py
-# Developer: Mr @Mrnick66
+# Developer: Mr AHMAD 
 # USTAAD-AI Premium Telegram bot handlers
 
 import logging
