@@ -1,5 +1,5 @@
 # user_preferences.py
-# Developer: Mr @Mrnick66
+# Developer: Mr Ahmad 
 # User preferences and language settings for USTAAD-AI
 
 import json
