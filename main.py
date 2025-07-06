@@ -11,6 +11,9 @@ from config import Config
 from enhanced_handlers import EnhancedOstaadHandlers
 from utils import Utils
 
+# ===== ADDED LINE: Import Ahmad Bhai Intro/Vision functions =====
+from ahmad_intro import get_creator_intro, get_ahmad_vision
+
 # Configure enhanced logging
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -189,7 +192,11 @@ class EnhancedOstaadAIBot:
             logger.info(f"🤖 AI Model: {Config.DEFAULT_MODEL}")
             logger.info(f"🌍 Supported Languages: {len(Config.SUPPORTED_LANGUAGES)}")
             logger.info(f"📚 Knowledge Categories: {len(Config.KNOWLEDGE_CATEGORIES)}")
-            
+
+            # ====== Example: Print Ahmad Bhai Intro at startup ======
+            print(get_creator_intro())
+            # print(get_ahmad_vision())    # Uncomment if you want vision on startup
+
             # Initialize application
             await self.application.initialize()
             
