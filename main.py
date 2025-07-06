@@ -11,9 +11,23 @@ from config import Config
 from enhanced_handlers import EnhancedOstaadHandlers
 from utils import Utils
 
-# ✅ STEP 2: ADDED IMPORTS
 import random
 from ahmad_intro import get_creator_intro, get_ahmad_vision
+import re
+
+# Custom filter for only "ahmad", "creator", etc.
+def is_intro_query(message):
+    text = message.text.lower()
+    return bool(re.search(r'\b(ahmad|creator|vision|founder)\b', text))
+
+intro_filter = filters.TEXT & filters.Create(is_intro_query)
+
+async def reply_intro_vision(update, context):
+    if random.random() < 0.5:
+        reply = get_creator_intro()
+    else:
+        reply = get_ahmad_vision()
+    await update.message.reply_text(reply, parse_mode="Markdown")
 
 # Configure enhanced logging
 logging.basicConfig(
@@ -25,15 +39,6 @@ logging.basicConfig(
     ]
 )
 logger = logging.getLogger(__name__)
-
-# ✅ STEP 3: ADDED FUNCTION, you can place it after imports or before the main class
-async def reply_intro_vision(update, context):
-    if random.random() < 0.5:
-        reply = get_creator_intro()
-    else:
-        reply = get_ahmad_vision()
-
-    await update.message.reply_text(reply, parse_mode="Markdown")
 
 class EnhancedOstaadAIBot:
     def __init__(self):
@@ -72,13 +77,13 @@ class EnhancedOstaadAIBot:
         # Callback query handler for enhanced inline buttons
         self.application.add_handler(CallbackQueryHandler(self.handlers.button_callback))
         
+        # ✅ Ahmad/creator/vision custom handler (only for keywords, should come before generic handler)
+        self.application.add_handler(MessageHandler(intro_filter, reply_intro_vision))
+
         # Enhanced message handler for all text messages (must be last)
         self.application.add_handler(
             MessageHandler(filters.TEXT & ~filters.COMMAND, self.handlers.handle_message)
         )
-
-        # ✅ STEP 4: ADD THIS HANDLER (it can be here, after other handlers)
-        self.application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, reply_intro_vision))
         
         logger.info("✅ All enhanced Ostaad AI handlers have been set up successfully")
     
