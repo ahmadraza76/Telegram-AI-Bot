@@ -1,6 +1,6 @@
 # main.py
-# Developer: Mr Ahmad 
-# Enhanced USTAAD-AI Premium Telegram Bot - Main Application
+# Developer: Ahmad Raza
+# Enhanced Ostaad AI Premium Telegram Bot - Main Application
 
 import logging
 import asyncio
@@ -8,7 +8,7 @@ import sys
 import os
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackQueryHandler
 from config import Config
-from enhanced_handlers import EnhancedBotHandlers
+from enhanced_handlers import EnhancedOstaadHandlers
 from utils import Utils
 
 # Configure enhanced logging
@@ -16,13 +16,13 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO,
     handlers=[
-        logging.FileHandler('logs/ustaad_ai.log', encoding='utf-8'),
+        logging.FileHandler('logs/ostaad_ai.log', encoding='utf-8'),
         logging.StreamHandler()
     ]
 )
 logger = logging.getLogger(__name__)
 
-class EnhancedUstaadAIBot:
+class EnhancedOstaadAIBot:
     def __init__(self):
         # Validate configuration
         Config.validate()
@@ -31,7 +31,7 @@ class EnhancedUstaadAIBot:
         Utils.setup_directories()
         
         # Initialize enhanced handlers
-        self.handlers = EnhancedBotHandlers()
+        self.handlers = EnhancedOstaadHandlers()
         
         # Create application with enhanced settings
         self.application = Application.builder().token(Config.TELEGRAM_BOT_TOKEN).build()
@@ -53,7 +53,7 @@ class EnhancedUstaadAIBot:
         
         # Enhanced command handlers
         self.application.add_handler(CommandHandler("stats", self._stats_command))
-        self.application.add_handler(CommandHandler("domains", self._domains_command))
+        self.application.add_handler(CommandHandler("categories", self._categories_command))
         self.application.add_handler(CommandHandler("reset", self._reset_command))
         
         # Callback query handler for enhanced inline buttons
@@ -64,14 +64,14 @@ class EnhancedUstaadAIBot:
             MessageHandler(filters.TEXT & ~filters.COMMAND, self.handlers.handle_message)
         )
         
-        logger.info("✅ All enhanced handlers have been set up successfully")
+        logger.info("✅ All enhanced Ostaad AI handlers have been set up successfully")
     
     async def _stats_command(self, update, context):
-        """Show bot statistics"""
+        """Show bot statistics with desi style"""
         user_info = Utils.get_user_info(update)
         
         if not Utils.is_admin(user_info['id']):
-            await update.message.reply_text("🚫 Admin access required for statistics.")
+            await update.message.reply_text("🚫 Admin access chahiye bhai statistics ke liye! 😅")
             return
         
         stats_message = f"""📊 **{Config.BOT_NAME} Statistics**
@@ -79,61 +79,72 @@ class EnhancedUstaadAIBot:
 🤖 **System Info:**
 • Version: {Config.VERSION}
 • Model: {Config.DEFAULT_MODEL}
-• Domains: {len(Config.KNOWLEDGE_DOMAINS)}
+• Categories: {len(Config.KNOWLEDGE_CATEGORIES)}
 • Languages: {len(Config.SUPPORTED_LANGUAGES)}
 
 🎯 **Performance:**
 • Max Tokens: {Config.MAX_TOKENS}
 • Temperature: {Config.TEMPERATURE}
 • Response Timeout: {Config.REQUEST_TIMEOUT}s
+• Human-like Score: {Config.HUMAN_LIKE_SCORE}
 
 👨‍💻 **Developer**: {Config.DEVELOPER}
-⚡ **Engine**: USTAAD-AI Enhanced
+⚡ **Engine**: Pure Desi AI Excellence
 
-🟢 **Status**: Fully Operational"""
+🟢 **Status**: Fully Operational aur Ready! 🔥"""
         
         await update.message.reply_text(stats_message, parse_mode='Markdown')
     
-    async def _domains_command(self, update, context):
-        """Show available knowledge domains"""
-        domains_message = f"""🎯 **{Config.BOT_NAME} Knowledge Domains**
+    async def _categories_command(self, update, context):
+        """Show available knowledge categories with desi style"""
+        categories_message = f"""🎯 **{Config.BOT_NAME} Knowledge Categories**
 
-🎓 **Academic Excellence**
-• Competitive Exams (UPSC, JEE, NEET, CAT)
+🎓 **Padhai & Education**
 • School/College subjects (All levels)
-• Research methodology & papers
+• Competitive Exams (UPSC, JEE, NEET, CAT)
+• Homework aur assignment help
 
-💻 **Technology Mastery**
-• Programming & Development
-• AI/ML & Data Science
-• Cybersecurity & Cloud
+💼 **Career & Job Guidance**
+• Job search strategies
+• Interview preparation
+• Resume writing aur improvement
 
-🎨 **Creative Powerhouse**
-• Content Writing & Blogging
-• Poetry & Shayari
-• Storytelling & Scripts
+💻 **Technology & Programming**
+• Coding aur development
+• AI/ML concepts
+• Tech troubleshooting
 
-💼 **Business Intelligence**
-• Startup guidance
-• Marketing strategies
-• Financial planning
+💰 **Online Earning & Business**
+• Freelancing tips
+• Business ideas aur planning
+• Investment guidance
 
-💪 **Life Coaching**
-• Career development
-• Relationship advice
-• Personal growth
+❤️ **Love & Relationships**
+• Dating advice
+• Relationship problems
+• Communication tips
 
-🌍 **Cultural Wisdom**
-• Indian traditions & festivals
-• Philosophy & spirituality
-• Current affairs analysis
+🗣️ **Language Learning**
+• English speaking improvement
+• Grammar aur vocabulary
+• Translation help
 
-💬 **Just ask anything - I'm your omni-domain expert!**"""
+🎬 **Entertainment & Fun**
+• Movies aur music recommendations
+• Jokes aur memes
+• Timepass content
+
+💪 **Motivation & Life Coaching**
+• Success mindset
+• Goal setting
+• Confidence building
+
+💬 **Kuch bhi poocho - main har category mein expert hoon! 🔥**"""
         
-        await update.message.reply_text(domains_message, parse_mode='Markdown')
+        await update.message.reply_text(categories_message, parse_mode='Markdown')
     
     async def _reset_command(self, update, context):
-        """Reset user conversation history"""
+        """Reset user conversation history with desi style"""
         user_info = Utils.get_user_info(update)
         
         # Clear user's conversation history
@@ -144,29 +155,30 @@ class EnhancedUstaadAIBot:
             del self.handlers.user_sessions[user_info['id']]
         
         await update.message.reply_text(
-            "🔄 **Conversation Reset Complete!**\n\n"
-            "Your conversation history has been cleared. "
-            "You can start fresh with any new topic!\n\n"
-            "💬 What would you like to explore today?"
+            "🔄 **Conversation Reset Ho Gaya!**\n\n"
+            "Tumhara conversation history clear ho gaya hai bhai! "
+            "Ab fresh start kar sakte ho kisi bhi topic ke saath! 🚀\n\n"
+            "💬 Aaj kya explore karna chahte ho? 🎯"
         )
     
     async def start_bot(self):
-        """Start the enhanced bot"""
+        """Start the enhanced Ostaad AI bot"""
         try:
             # Display enhanced startup information
             startup_info = f"""
 ╔══════════════════════════════════════════════════════════════╗
-║                    🎯 USTAAD-AI ENHANCED                     ║
+║                    🎯 OSTAAD AI ENHANCED                     ║
 ╠══════════════════════════════════════════════════════════════╣
 ║  Version: {Config.VERSION:<47} ║
 ║  Developer: {Config.DEVELOPER:<45} ║
 ║  Model: {Config.DEFAULT_MODEL:<49} ║
-║  Domains: {len(Config.KNOWLEDGE_DOMAINS):<47} ║
+║  Categories: {len(Config.KNOWLEDGE_CATEGORIES):<45} ║
 ║  Languages: {len(Config.SUPPORTED_LANGUAGES):<45} ║
 ╠══════════════════════════════════════════════════════════════╣
-║  🧠 Omni-Domain AI Excellence                               ║
-║  🚀 ChatGPT-Level Intelligence + Indian Context             ║
-║  ⚡ Powered by USTAAD-AI Engine                             ║
+║  🧠 Pure Desi AI Excellence                                 ║
+║  🚀 Human-like Intelligence + Indian Context                ║
+║  ⚡ Powered by Ostaad AI Engine                             ║
+║  💬 Har Sawal Ka Jawab - Bilkul Human Jaisa!               ║
 ╚══════════════════════════════════════════════════════════════╝
 """
             
@@ -176,7 +188,7 @@ class EnhancedUstaadAIBot:
             logger.info(f"👨‍💻 Developer: {Config.DEVELOPER}")
             logger.info(f"🤖 AI Model: {Config.DEFAULT_MODEL}")
             logger.info(f"🌍 Supported Languages: {len(Config.SUPPORTED_LANGUAGES)}")
-            logger.info(f"📚 Knowledge Domains: {len(Config.KNOWLEDGE_DOMAINS)}")
+            logger.info(f"📚 Knowledge Categories: {len(Config.KNOWLEDGE_CATEGORIES)}")
             
             # Initialize application
             await self.application.initialize()
@@ -193,9 +205,9 @@ class EnhancedUstaadAIBot:
             )
             
             # Enhanced startup message
-            logger.info("🚀 USTAAD-AI is now LIVE and ready to serve!")
-            logger.info("🎯 Omni-Domain expertise activated")
-            logger.info("💬 Ready to handle any question in any domain")
+            logger.info("🚀 Ostaad AI is now LIVE and ready to serve!")
+            logger.info("🎯 Pure desi expertise activated")
+            logger.info("💬 Ready to handle any question with human-like intelligence")
             logger.info("🌟 Press Ctrl+C to stop the bot")
             
             # Run until interrupted
@@ -205,7 +217,7 @@ class EnhancedUstaadAIBot:
                 logger.info("🛑 Received stop signal - Shutting down gracefully")
             
         except Exception as e:
-            logger.error(f"❌ Failed to start enhanced bot: {e}")
+            logger.error(f"❌ Failed to start enhanced Ostaad AI bot: {e}")
             raise
         finally:
             # Enhanced cleanup
@@ -219,7 +231,7 @@ class EnhancedUstaadAIBot:
                 logger.error(f"❌ Error during cleanup: {e}")
     
     def run(self):
-        """Run the enhanced bot"""
+        """Run the enhanced Ostaad AI bot"""
         try:
             # Check if event loop is already running
             try:
@@ -235,19 +247,19 @@ class EnhancedUstaadAIBot:
                 asyncio.run(self.start_bot())
                 
         except KeyboardInterrupt:
-            logger.info("👋 USTAAD-AI stopped by user")
+            logger.info("👋 Ostaad AI stopped by user")
         except Exception as e:
-            logger.error(f"💥 USTAAD-AI crashed: {e}")
+            logger.error(f"💥 Ostaad AI crashed: {e}")
             raise
 
 def main():
     """Enhanced main function"""
     try:
-        print("🎯 Initializing USTAAD-AI Enhanced...")
-        bot = EnhancedUstaadAIBot()
+        print("🎯 Initializing Ostaad AI Enhanced...")
+        bot = EnhancedOstaadAIBot()
         bot.run()
     except Exception as e:
-        logger.error(f"💥 Failed to start USTAAD-AI: {e}")
+        logger.error(f"💥 Failed to start Ostaad AI: {e}")
         sys.exit(1)
 
 if __name__ == '__main__':

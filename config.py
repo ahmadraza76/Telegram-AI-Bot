@@ -1,6 +1,6 @@
 # config.py
-# Developer: Mr AHMAD
-# Enhanced USTAAD-AI Premium Telegram Bot Configuration
+# Developer: Ahmad Raza
+# Enhanced Ostaad AI Premium Telegram Bot Configuration
 
 import os
 from dotenv import load_dotenv
@@ -13,16 +13,16 @@ class Config:
     # ==============================================
     TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
     GROQ_API_KEY = os.getenv('GROQ_API_KEY')
-    BOT_USERNAME = os.getenv('BOT_USERNAME', 'UstaadAIBot')
+    BOT_USERNAME = os.getenv('BOT_USERNAME', 'OstaadAIBot')
     ADMIN_USER_ID = int(os.getenv('ADMIN_USER_ID', '0'))
     
     # ==============================================
     # 🤖 Enhanced AI Model Configuration
     # ==============================================
-    DEFAULT_MODEL = "llama3-70b-8192"      # Upgraded to more powerful model
+    DEFAULT_MODEL = "llama3-70b-8192"      # Powerful model for better responses
     FALLBACK_MODEL = "llama3-8b-8192"      # Fallback for high load
     MAX_TOKENS = 4000                      # Increased for comprehensive responses
-    TEMPERATURE = 0.7                      # Optimal creativity balance
+    TEMPERATURE = 0.8                      # Higher creativity for human-like responses
     TOP_P = 0.9                           # Nucleus sampling
     FREQUENCY_PENALTY = 0.1               # Reduce repetition
     PRESENCE_PENALTY = 0.1                # Encourage topic diversity
@@ -31,130 +31,162 @@ class Config:
     # ⚙️ Enhanced Bot Technical Settings
     # ==============================================
     MAX_MESSAGE_LENGTH = 4096              # Telegram message limit
-    TYPING_DELAY = 3                       # Increased for complex responses
+    TYPING_DELAY = 3                       # Typing simulation delay
     MAX_RETRIES = 3                        # API call retry attempts
-    REQUEST_TIMEOUT = 45                   # Increased timeout for complex queries
-    CONVERSATION_MEMORY = 40               # Increased conversation history
+    REQUEST_TIMEOUT = 45                   # Timeout for complex queries
+    CONVERSATION_MEMORY = 40               # Conversation history limit
     
     # ==============================================
-    # 🧠 Knowledge & Learning Configuration
+    # 🧠 Ostaad AI Knowledge Configuration
     # ==============================================
-    KNOWLEDGE_DOMAINS = [
-        "academic", "technology", "creative", "cultural", 
-        "business", "science", "philosophy", "current_affairs"
+    KNOWLEDGE_CATEGORIES = [
+        "padhai_education", "career_job", "programming_tech", "online_earning",
+        "love_relationships", "language_learning", "entertainment", "motivation",
+        "health_fitness", "general_knowledge", "religion_culture", "jokes_fun"
     ]
     
     EXPERTISE_LEVELS = ["beginner", "intermediate", "advanced", "expert"]
     
-    SUPPORTED_SUBJECTS = [
+    SUPPORTED_TOPICS = [
         # Academic
         "mathematics", "physics", "chemistry", "biology", "computer_science",
         "economics", "history", "geography", "political_science", "psychology",
         
-        # Technology
-        "programming", "ai_ml", "cybersecurity", "cloud_computing", "blockchain",
-        "web_development", "mobile_development", "data_science", "devops",
-        
         # Competitive Exams
         "upsc", "jee", "neet", "cat", "gate", "ssc", "banking", "railway",
         
-        # Creative
-        "writing", "poetry", "storytelling", "design", "music", "art",
+        # Technology
+        "programming", "ai_ml", "cybersecurity", "web_development", "mobile_development",
+        "data_science", "cloud_computing", "blockchain", "telegram_bots",
         
-        # Life Skills
-        "career", "relationships", "productivity", "motivation", "health"
+        # Career & Business
+        "job_search", "interview_prep", "resume_writing", "startup", "business_plan",
+        "digital_marketing", "freelancing", "online_earning", "cryptocurrency",
+        
+        # Personal & Social
+        "relationships", "love_advice", "friendship", "family", "communication",
+        "motivation", "goal_setting", "habit_formation", "stress_management",
+        
+        # Language & Culture
+        "english_learning", "hindi_grammar", "translation", "indian_culture",
+        "festivals", "religion", "philosophy", "current_affairs",
+        
+        # Entertainment & Fun
+        "movies", "music", "memes", "jokes", "shayari", "poetry", "storytelling",
+        "riddles", "games", "timepass"
     ]
     
     # ==============================================
     # 📁 File System Configuration
     # ==============================================
-    LOGS_DIR = "logs"                      # Directory for log files
-    TEMP_DIR = "temp"                      # Temporary files directory
-    USER_DATA_DIR = "user_data"            # User preferences storage
-    KNOWLEDGE_BASE_DIR = "knowledge_base"  # Knowledge base storage
+    LOGS_DIR = "logs"
+    TEMP_DIR = "temp"
+    USER_DATA_DIR = "user_data"
     
     # ==============================================
     # 🎨 Enhanced Branding & UI Configuration
     # ==============================================
-    BOT_NAME = "USTAAD-AI"
-    VERSION = "v3.0.0"                     # Updated version
-    DEVELOPER = "Mr AHMAD"
-    POWERED_BY = "⚡ Powered by USTAAD-AI Engine"
-    SUPPORT_CHAT = "https://t.me/UstaadAISupport"
-    TAGLINE = "Your Omni-Domain AI Mentor"
+    BOT_NAME = "Ostaad AI"
+    VERSION = "v3.0.0"
+    DEVELOPER = "Ahmad Raza"
+    POWERED_BY = "⚡ Powered by Ostaad AI Engine"
+    SUPPORT_CHAT = "https://t.me/OstaadAISupport"
+    TAGLINE = "Your Digital Ustad - Har Sawal Ka Jawab! 🎯"
     
     # ==============================================
-    # ✨ Enhanced UI Emoji Configuration
+    # ✨ Enhanced Emoji Configuration for Desi Style
     # ==============================================
-    BRAND_EMOJI = "🎯"                     # Primary brand emoji
-    SUCCESS_EMOJI = "✅"                   # Success indicators
-    ERROR_EMOJI = "❌"                     # Error indicators
-    WARNING_EMOJI = "⚠️"                   # Warning messages
-    THINKING_EMOJI = "🤔"                  # AI processing
-    AI_EMOJI = "🧠"                        # AI responses
-    FIRE_EMOJI = "🔥"                      # Special highlights
-    STAR_EMOJI = "⭐"                       # Premium features
-    LOADING_EMOJI = "⏳"                   # Loading states
-    GURU_EMOJI = "🎓"                      # Academic responses
-    TECH_EMOJI = "💻"                      # Technology responses
-    CREATIVE_EMOJI = "🎨"                  # Creative responses
-    CULTURE_EMOJI = "🌍"                   # Cultural responses
+    BRAND_EMOJI = "🎯"
+    SUCCESS_EMOJI = "✅"
+    ERROR_EMOJI = "❌"
+    WARNING_EMOJI = "⚠️"
+    THINKING_EMOJI = "🤔"
+    AI_EMOJI = "🧠"
+    FIRE_EMOJI = "🔥"
+    STAR_EMOJI = "⭐"
+    LOADING_EMOJI = "⏳"
+    
+    # Mood-based emojis
+    MOOD_EMOJIS = {
+        "happy": ["😄", "😊", "🔥", "💪", "✨"],
+        "sad": ["😞", "💔", "🥺", "🙏", "❤️"],
+        "angry": ["😤", "😌", "🙏", "💆‍♂️", "🧘‍♂️"],
+        "confused": ["🤔", "💡", "📚", "🎯", "👨‍🏫"],
+        "neutral": ["👋", "💬", "👍", "👌", "🤝"]
+    }
+    
+    # Category-specific emojis
+    CATEGORY_EMOJIS = {
+        "padhai_education": ["🎓", "📚", "✏️", "🧠"],
+        "career_job": ["💼", "📄", "📈", "🧑‍💼"],
+        "programming_tech": ["💻", "🛠️", "⚙️", "🧑‍💻"],
+        "online_earning": ["💰", "💸", "📊", "💳"],
+        "love_relationships": ["❤️", "💕", "🤗", "🥰"],
+        "language_learning": ["📖", "🗣️", "🔤", "📚"],
+        "entertainment": ["🎬", "🎵", "😂", "🤣"],
+        "motivation": ["💪", "🔥", "🧠", "✨"],
+        "health_fitness": ["🩺", "🍎", "🏃‍♂️", "😷"],
+        "general_knowledge": ["🌍", "📰", "🧭", "📊"],
+        "religion_culture": ["🕉️", "🙏", "🎭", "🏛️"],
+        "jokes_fun": ["😜", "😎", "🤣", "🔥"]
+    }
     
     # ==============================================
     # 🌐 Enhanced Language & Localization
     # ==============================================
-    DEFAULT_LANGUAGE = "hi"                # Default to Hindi
-    SUPPORTED_LANGUAGES = [                # Available languages
+    DEFAULT_LANGUAGE = "hi"
+    SUPPORTED_LANGUAGES = [
         "en", "hi", "ur", "ar", "bn", "mr", 
         "te", "ta", "gu", "kn", "or", "pa",
-        "ml", "as", "ne", "si"             # Added more languages
+        "ml", "as", "ne", "si"
     ]
     
-    # Language preferences for different domains
-    DOMAIN_LANGUAGE_PREFERENCES = {
-        "academic": ["hi", "en"],           # Hindi + English for academics
-        "technology": ["en", "hi"],         # English primary for tech
-        "creative": ["hi", "ur", "en"],     # Hindi/Urdu for creativity
-        "cultural": ["hi", "ur", "bn"]      # Local languages for culture
+    # Hinglish phrases for natural conversation
+    HINGLISH_PHRASES = {
+        "greetings": ["Are bhai", "Kya haal", "Suno yaar", "Dekho bhai"],
+        "agreement": ["Bilkul sahi", "Haan yaar", "Exactly", "Sahi pakde"],
+        "explanation": ["Chalo samjhaata hoon", "Dekho aise hai", "Simple hai bhai"],
+        "encouragement": ["Tension mat lo", "Ho jaayega", "Koi baat nahi", "Sab theek hai"],
+        "excitement": ["Waah bhai", "Bahut badhiya", "Sahi hai", "Mast hai"]
     }
     
     # ==============================================
     # 🔒 Enhanced Security & Rate Limiting
     # ==============================================
-    RATE_LIMIT = 60                        # Increased to 60 messages per minute
+    RATE_LIMIT = 60                        # Messages per minute
     BAN_DURATION = 3600                    # 1 hour in seconds
-    ADMIN_COMMANDS = [                     # Restricted commands
+    ADMIN_COMMANDS = [
         "broadcast", "stats", "maintenance", 
-        "banuser", "analytics", "knowledge_update"
+        "banuser", "analytics", "user_management"
     ]
     
     # ==============================================
     # 📊 Analytics & Performance
     # ==============================================
-    ENABLE_ANALYTICS = True                # Track user interactions
-    PERFORMANCE_MONITORING = True          # Monitor response times
-    KNOWLEDGE_TRACKING = True              # Track knowledge domain usage
-    USER_FEEDBACK_COLLECTION = True        # Collect user feedback
+    ENABLE_ANALYTICS = True
+    PERFORMANCE_MONITORING = True
+    USER_MOOD_TRACKING = True              # Track user emotional states
+    CONVERSATION_ANALYTICS = True          # Analyze conversation patterns
     
     # ==============================================
     # 🎯 Response Quality Configuration
     # ==============================================
-    MIN_RESPONSE_LENGTH = 50               # Minimum response length
-    MAX_RESPONSE_LENGTH = 3500             # Maximum response length
-    QUALITY_THRESHOLD = 0.8                # Response quality threshold
-    ACCURACY_TARGET = 0.95                 # Target accuracy rate
+    MIN_RESPONSE_LENGTH = 50
+    MAX_RESPONSE_LENGTH = 3500
+    QUALITY_THRESHOLD = 0.8
+    ACCURACY_TARGET = 0.95
+    HUMAN_LIKE_SCORE = 0.9                 # Target for human-like responses
     
-    # Cultural context keywords
+    # Desi context keywords
     INDIAN_CULTURAL_KEYWORDS = [
         "bollywood", "cricket", "festival", "tradition", "mythology",
-        "spirituality", "yoga", "ayurveda", "classical_music", "dance"
+        "spirituality", "yoga", "ayurveda", "classical_music", "dance",
+        "chai", "samosa", "diwali", "holi", "eid", "ganesh", "durga"
     ]
     
     @classmethod
     def validate(cls):
-        """
-        🔍 Enhanced validation of configuration parameters
-        """
+        """Enhanced validation of configuration parameters"""
         if not cls.TELEGRAM_BOT_TOKEN:
             raise ValueError("🚫 TELEGRAM_BOT_TOKEN is required in .env file")
         if not cls.GROQ_API_KEY:
@@ -171,7 +203,7 @@ class Config:
     
     @classmethod
     def get_bot_info(cls):
-        """📊 Get enhanced bot information string"""
+        """Get enhanced bot information string"""
         return f"""
 {cls.BRAND_EMOJI} {cls.BOT_NAME} {cls.VERSION}
 {cls.TAGLINE}
@@ -180,10 +212,9 @@ class Config:
 👨‍💻 Developer: {cls.DEVELOPER}
 🧠 Model: {cls.DEFAULT_MODEL}
 🌍 Languages: {len(cls.SUPPORTED_LANGUAGES)}
-📚 Domains: {len(cls.KNOWLEDGE_DOMAINS)}
-📩 Support: {cls.SUPPORT_CHAT}
+📚 Categories: {len(cls.KNOWLEDGE_CATEGORIES)}
 
-🎯 Omni-Domain AI Excellence
+🎯 Pure Desi AI Excellence - Har Sawal Ka Jawab! 💪
 """
     
     @classmethod
