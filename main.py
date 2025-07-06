@@ -11,7 +11,8 @@ from config import Config
 from enhanced_handlers import EnhancedOstaadHandlers
 from utils import Utils
 
-# ===== ADDED LINE: Import Ahmad Bhai Intro/Vision functions =====
+# ✅ STEP 2: ADDED IMPORTS
+import random
 from ahmad_intro import get_creator_intro, get_ahmad_vision
 
 # Configure enhanced logging
@@ -24,6 +25,15 @@ logging.basicConfig(
     ]
 )
 logger = logging.getLogger(__name__)
+
+# ✅ STEP 3: ADDED FUNCTION, you can place it after imports or before the main class
+async def reply_intro_vision(update, context):
+    if random.random() < 0.5:
+        reply = get_creator_intro()
+    else:
+        reply = get_ahmad_vision()
+
+    await update.message.reply_text(reply, parse_mode="Markdown")
 
 class EnhancedOstaadAIBot:
     def __init__(self):
@@ -66,6 +76,9 @@ class EnhancedOstaadAIBot:
         self.application.add_handler(
             MessageHandler(filters.TEXT & ~filters.COMMAND, self.handlers.handle_message)
         )
+
+        # ✅ STEP 4: ADD THIS HANDLER (it can be here, after other handlers)
+        self.application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, reply_intro_vision))
         
         logger.info("✅ All enhanced Ostaad AI handlers have been set up successfully")
     
@@ -192,11 +205,7 @@ class EnhancedOstaadAIBot:
             logger.info(f"🤖 AI Model: {Config.DEFAULT_MODEL}")
             logger.info(f"🌍 Supported Languages: {len(Config.SUPPORTED_LANGUAGES)}")
             logger.info(f"📚 Knowledge Categories: {len(Config.KNOWLEDGE_CATEGORIES)}")
-
-            # ====== Example: Print Ahmad Bhai Intro at startup ======
-            print(get_creator_intro())
-            # print(get_ahmad_vision())    # Uncomment if you want vision on startup
-
+            
             # Initialize application
             await self.application.initialize()
             
