@@ -52,37 +52,37 @@ class EnhancedOstaadHandlers:
             # Get enhanced welcome message
             welcome_data = self._get_desi_welcome_message(preferred_lang, user_info['first_name'])
             
-            # Create enhanced inline keyboard
+            # Create clean inline keyboard without emojis
             keyboard = [
                 [
-                    InlineKeyboardButton("🎓 Padhai Help", callback_data="category_education"),
-                    InlineKeyboardButton("💼 Career Guide", callback_data="category_career")
+                    InlineKeyboardButton("Padhai Help", callback_data="category_education"),
+                    InlineKeyboardButton("Career Guide", callback_data="category_career")
                 ],
                 [
-                    InlineKeyboardButton("💻 Tech Support", callback_data="category_tech"),
-                    InlineKeyboardButton("💰 Earning Tips", callback_data="category_earning")
+                    InlineKeyboardButton("Tech Support", callback_data="category_tech"),
+                    InlineKeyboardButton("Earning Tips", callback_data="category_earning")
                 ],
                 [
-                    InlineKeyboardButton("❤️ Love Advice", callback_data="category_love"),
-                    InlineKeyboardButton("🗣️ Language Help", callback_data="category_language")
+                    InlineKeyboardButton("Love Advice", callback_data="category_love"),
+                    InlineKeyboardButton("Language Help", callback_data="category_language")
                 ],
                 [
-                    InlineKeyboardButton("🎬 Entertainment", callback_data="category_fun"),
-                    InlineKeyboardButton("💪 Motivation", callback_data="category_motivation")
+                    InlineKeyboardButton("Entertainment", callback_data="category_fun"),
+                    InlineKeyboardButton("Motivation", callback_data="category_motivation")
                 ],
                 [
-                    InlineKeyboardButton("🆘 Help & Commands", callback_data="help"),
-                    InlineKeyboardButton("ℹ️ About Ostaad AI", callback_data="info")
+                    InlineKeyboardButton("Help & Commands", callback_data="help"),
+                    InlineKeyboardButton("About Ostaad AI", callback_data="info")
                 ],
                 [
-                    InlineKeyboardButton("🌐 Language Settings", callback_data="language_settings"),
-                    InlineKeyboardButton("📊 My Journey", callback_data="user_stats")
+                    InlineKeyboardButton("Language Settings", callback_data="language_settings"),
+                    InlineKeyboardButton("My Journey", callback_data="user_stats")
                 ]
             ]
             
-            # Add admin panel for admin users
+            # Add admin panel for admin users only
             if self.utils.is_admin(user_info['id']):
-                keyboard.append([InlineKeyboardButton("👨‍💻 Admin Panel", callback_data="admin_panel")])
+                keyboard.append([InlineKeyboardButton("Admin Panel", callback_data="admin_panel")])
             
             reply_markup = InlineKeyboardMarkup(keyboard)
             
@@ -165,7 +165,7 @@ class EnhancedOstaadHandlers:
             message_chunks = self.utils.split_long_message(formatted_response)
             
             # Create enhanced keyboard with category-specific options
-            keyboard = self._create_desi_keyboard(category, user_info['id'], preferred_lang)
+            keyboard = self._create_clean_keyboard(category, user_info['id'], preferred_lang)
             reply_markup = InlineKeyboardMarkup(keyboard)
             
             # Send response(s) with enhanced formatting
@@ -318,61 +318,51 @@ class EnhancedOstaadHandlers:
         
         return response
 
-    def _create_desi_keyboard(self, category: str, user_id: int, language: str) -> list:
-        """Create enhanced keyboard with desi style options"""
+    def _create_clean_keyboard(self, category: str, user_id: int, language: str) -> list:
+        """Create clean keyboard without emojis - glass-type buttons"""
         
-        # Base keyboard
+        # Base keyboard with back button
         keyboard = [
             [
-                InlineKeyboardButton("📋 Main Menu", callback_data="main_menu"),
-                InlineKeyboardButton("🔄 Naya Sawal", callback_data="new_question")
+                InlineKeyboardButton("◀️ Main Menu", callback_data="main_menu"),
+                InlineKeyboardButton("🔄 New Question", callback_data="new_question")
             ]
         ]
         
         # Add category-specific quick actions
         category_actions = {
             "padhai_education": [
-                InlineKeyboardButton("📚 More Examples", callback_data="more_examples"),
-                InlineKeyboardButton("🧮 Practice Questions", callback_data="practice_questions")
+                InlineKeyboardButton("More Examples", callback_data="more_examples"),
+                InlineKeyboardButton("Practice Questions", callback_data="practice_questions")
             ],
             "career_job": [
-                InlineKeyboardButton("💼 Interview Tips", callback_data="interview_tips"),
-                InlineKeyboardButton("📄 Resume Help", callback_data="resume_help")
+                InlineKeyboardButton("Interview Tips", callback_data="interview_tips"),
+                InlineKeyboardButton("Resume Help", callback_data="resume_help")
             ],
             "programming_tech": [
-                InlineKeyboardButton("💻 Code Examples", callback_data="code_examples"),
-                InlineKeyboardButton("🛠️ Tech Resources", callback_data="tech_resources")
+                InlineKeyboardButton("Code Examples", callback_data="code_examples"),
+                InlineKeyboardButton("Tech Resources", callback_data="tech_resources")
             ],
             "online_earning": [
-                InlineKeyboardButton("💰 Earning Ideas", callback_data="earning_ideas"),
-                InlineKeyboardButton("📊 Business Tips", callback_data="business_tips")
+                InlineKeyboardButton("Earning Ideas", callback_data="earning_ideas"),
+                InlineKeyboardButton("Business Tips", callback_data="business_tips")
             ],
             "love_relationships": [
-                InlineKeyboardButton("❤️ Love Tips", callback_data="love_tips"),
-                InlineKeyboardButton("🤗 Relationship Advice", callback_data="relationship_advice")
+                InlineKeyboardButton("Love Tips", callback_data="love_tips"),
+                InlineKeyboardButton("Relationship Advice", callback_data="relationship_advice")
             ],
             "entertainment": [
-                InlineKeyboardButton("🎬 More Fun", callback_data="more_fun"),
-                InlineKeyboardButton("😂 Jokes", callback_data="jokes")
+                InlineKeyboardButton("More Fun", callback_data="more_fun"),
+                InlineKeyboardButton("Jokes", callback_data="jokes")
             ],
             "motivation": [
-                InlineKeyboardButton("💪 Motivation Boost", callback_data="motivation_boost"),
-                InlineKeyboardButton("🎯 Goal Setting", callback_data="goal_setting")
+                InlineKeyboardButton("Motivation Boost", callback_data="motivation_boost"),
+                InlineKeyboardButton("Goal Setting", callback_data="goal_setting")
             ]
         }
         
         if category in category_actions:
             keyboard.insert(0, category_actions[category])
-        
-        # Add language and stats options
-        keyboard.append([
-            InlineKeyboardButton("🌐 Language", callback_data="language_settings"),
-            InlineKeyboardButton("📊 My Journey", callback_data="user_stats")
-        ])
-        
-        # Add admin panel for admin users
-        if self.utils.is_admin(user_id):
-            keyboard.append([InlineKeyboardButton("👨‍💻 Admin Panel", callback_data="admin_panel")])
         
         return keyboard
 
@@ -397,6 +387,12 @@ class EnhancedOstaadHandlers:
             
             elif callback_data == "new_question":
                 await self._handle_new_question(query, user_info, preferred_lang)
+            
+            elif callback_data == "admin_panel":
+                await self._handle_admin_panel(query, user_info, preferred_lang)
+            
+            elif callback_data == "broadcast":
+                await self._handle_broadcast_menu(query, user_info, preferred_lang)
             
             elif callback_data in ["more_examples", "practice_questions", "interview_tips", "resume_help",
                                  "code_examples", "tech_resources", "earning_ideas", "business_tips",
@@ -474,12 +470,73 @@ class EnhancedOstaadHandlers:
 💬 **Bas apna sawal type karo aur main expert guidance dunga! 🎯**"""
         
         keyboard = [
-            [InlineKeyboardButton("💬 Sawal Poocho", callback_data="new_question")],
-            [InlineKeyboardButton("🔙 Main Menu", callback_data="main_menu")]
+            [InlineKeyboardButton("💬 Ask Question", callback_data="new_question")],
+            [InlineKeyboardButton("◀️ Back to Main Menu", callback_data="main_menu")]
         ]
         
         await query.edit_message_text(
             message,
+            reply_markup=InlineKeyboardMarkup(keyboard),
+            parse_mode='Markdown'
+        )
+
+    async def _handle_admin_panel(self, query, user_info: dict, language: str):
+        """Handle admin panel - only for admin users"""
+        if not self.utils.is_admin(user_info['id']):
+            await query.edit_message_text("🚫 Admin access required bhai! 😅")
+            return
+        
+        admin_message = f"""👨‍💻 **Admin Panel - Ostaad AI**
+
+🎯 **System Status**: Online & Active
+📊 **Bot Version**: {Config.VERSION}
+🧠 **AI Model**: {Config.DEFAULT_MODEL}
+
+**Available Admin Functions:**"""
+        
+        keyboard = [
+            [
+                InlineKeyboardButton("📢 Broadcast Message", callback_data="broadcast"),
+                InlineKeyboardButton("📊 Bot Statistics", callback_data="admin_stats")
+            ],
+            [
+                InlineKeyboardButton("👥 User Management", callback_data="user_management"),
+                InlineKeyboardButton("⚙️ System Settings", callback_data="system_settings")
+            ],
+            [InlineKeyboardButton("◀️ Back to Main Menu", callback_data="main_menu")]
+        ]
+        
+        await query.edit_message_text(
+            admin_message,
+            reply_markup=InlineKeyboardMarkup(keyboard),
+            parse_mode='Markdown'
+        )
+
+    async def _handle_broadcast_menu(self, query, user_info: dict, language: str):
+        """Handle broadcast menu - only for admin"""
+        if not self.utils.is_admin(user_info['id']):
+            await query.edit_message_text("🚫 Admin access required! 😅")
+            return
+        
+        broadcast_message = """📢 **Broadcast Message System**
+
+🎯 **Instructions:**
+1. Use `/broadcast <your_message>` command to send message to all users
+2. Message will be sent to all active users
+3. Use responsibly - avoid spam
+
+**Example:**
+`/broadcast 🎉 Ostaad AI has new features! Check them out!`
+
+⚠️ **Note**: This feature is under development"""
+        
+        keyboard = [
+            [InlineKeyboardButton("◀️ Back to Admin Panel", callback_data="admin_panel")],
+            [InlineKeyboardButton("🏠 Main Menu", callback_data="main_menu")]
+        ]
+        
+        await query.edit_message_text(
+            broadcast_message,
             reply_markup=InlineKeyboardMarkup(keyboard),
             parse_mode='Markdown'
         )
@@ -511,8 +568,8 @@ class EnhancedOstaadHandlers:
 {Config.POWERED_BY}"""
         
         keyboard = [
-            [InlineKeyboardButton("🔄 Stats Reset", callback_data="reset_stats")],
-            [InlineKeyboardButton("🔙 Main Menu", callback_data="main_menu")]
+            [InlineKeyboardButton("🔄 Reset Stats", callback_data="reset_stats")],
+            [InlineKeyboardButton("◀️ Back to Main Menu", callback_data="main_menu")]
         ]
         
         await query.edit_message_text(
@@ -540,7 +597,7 @@ class EnhancedOstaadHandlers:
 {random.choice(Config.HINGLISH_PHRASES['encouragement'])} - Main tumhara digital ustad hoon! 🧑‍🏫"""
         
         keyboard = [
-            [InlineKeyboardButton("🔙 Main Menu", callback_data="main_menu")]
+            [InlineKeyboardButton("◀️ Back to Main Menu", callback_data="main_menu")]
         ]
         
         await query.edit_message_text(
@@ -572,8 +629,8 @@ class EnhancedOstaadHandlers:
         response = action_responses.get(action, "💬 Bas poocho bhai, main help karunga! 🤝")
         
         keyboard = [
-            [InlineKeyboardButton("💬 Haan Batao", callback_data="new_question")],
-            [InlineKeyboardButton("🔙 Main Menu", callback_data="main_menu")]
+            [InlineKeyboardButton("💬 Ask Now", callback_data="new_question")],
+            [InlineKeyboardButton("◀️ Back to Main Menu", callback_data="main_menu")]
         ]
         
         await query.edit_message_text(
@@ -591,22 +648,34 @@ class EnhancedOstaadHandlers:
             
             keyboard = [
                 [
-                    InlineKeyboardButton("🎓 Padhai Help", callback_data="category_education"),
-                    InlineKeyboardButton("💼 Career Guide", callback_data="category_career")
+                    InlineKeyboardButton("Padhai Help", callback_data="category_education"),
+                    InlineKeyboardButton("Career Guide", callback_data="category_career")
                 ],
                 [
-                    InlineKeyboardButton("💻 Tech Support", callback_data="category_tech"),
-                    InlineKeyboardButton("💰 Earning Tips", callback_data="category_earning")
+                    InlineKeyboardButton("Tech Support", callback_data="category_tech"),
+                    InlineKeyboardButton("Earning Tips", callback_data="category_earning")
                 ],
                 [
-                    InlineKeyboardButton("❤️ Love Advice", callback_data="category_love"),
-                    InlineKeyboardButton("🗣️ Language Help", callback_data="category_language")
+                    InlineKeyboardButton("Love Advice", callback_data="category_love"),
+                    InlineKeyboardButton("Language Help", callback_data="category_language")
                 ],
                 [
-                    InlineKeyboardButton("🎬 Entertainment", callback_data="category_fun"),
-                    InlineKeyboardButton("💪 Motivation", callback_data="category_motivation")
+                    InlineKeyboardButton("Entertainment", callback_data="category_fun"),
+                    InlineKeyboardButton("Motivation", callback_data="category_motivation")
+                ],
+                [
+                    InlineKeyboardButton("Help & Commands", callback_data="help"),
+                    InlineKeyboardButton("About Ostaad AI", callback_data="info")
+                ],
+                [
+                    InlineKeyboardButton("Language Settings", callback_data="language_settings"),
+                    InlineKeyboardButton("My Journey", callback_data="user_stats")
                 ]
             ]
+            
+            # Add admin panel for admin users only
+            if self.utils.is_admin(user_info['id']):
+                keyboard.append([InlineKeyboardButton("Admin Panel", callback_data="admin_panel")])
             
             await query.edit_message_text(
                 welcome_data,
@@ -653,7 +722,7 @@ class EnhancedOstaadHandlers:
 {Config.POWERED_BY}"""
         
         keyboard = [
-            [InlineKeyboardButton("🔙 Main Menu", callback_data="main_menu")]
+            [InlineKeyboardButton("◀️ Back to Main Menu", callback_data="main_menu")]
         ]
         
         await query.edit_message_text(
@@ -695,7 +764,7 @@ class EnhancedOstaadHandlers:
 {Config.POWERED_BY}"""
         
         keyboard = [
-            [InlineKeyboardButton("🔙 Main Menu", callback_data="main_menu")]
+            [InlineKeyboardButton("◀️ Back to Main Menu", callback_data="main_menu")]
         ]
         
         await query.edit_message_text(
@@ -733,7 +802,7 @@ Aur languages bhi support karta hoon basic level pe.
                 InlineKeyboardButton("🇵🇰 Urdu", callback_data="set_lang_ur"),
                 InlineKeyboardButton("🇧🇩 Bengali", callback_data="set_lang_bn")
             ],
-            [InlineKeyboardButton("🔙 Main Menu", callback_data="main_menu")]
+            [InlineKeyboardButton("◀️ Back to Main Menu", callback_data="main_menu")]
         ]
         
         await query.edit_message_text(
@@ -763,7 +832,7 @@ Aur languages bhi support karta hoon basic level pe.
         
         keyboard = [
             [InlineKeyboardButton("🔄 Try Again", callback_data="new_question")],
-            [InlineKeyboardButton("📋 Main Menu", callback_data="main_menu")]
+            [InlineKeyboardButton("🏠 Main Menu", callback_data="main_menu")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
