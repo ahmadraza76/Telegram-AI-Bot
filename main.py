@@ -6,7 +6,8 @@ import logging
 import asyncio
 import sys
 import os
-from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackQueryHandler, BaseFilter
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackQueryHandler
+from telegram.ext.filters import BaseFilter
 from config import Config
 from enhanced_handlers import EnhancedOstaadHandlers
 from utils import Utils
