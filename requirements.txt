@@ -1,6 +1,6 @@
 # requirements.txt
-# Developer: Mr Ahmad 
-# Premium ChatGPT-like Telegram Bot Dependencies
+# Developer: Ahmad Raza
+# Premium Ostaad AI Telegram Bot Dependencies
 
 python-telegram-bot==20.7
 groq==0.4.1
@@ -12,3 +12,4 @@ pillow==10.1.0
 reportlab==4.0.7
 markdown==3.5.1
 beautifulsoup4==4.12.2
+textblob==0.17.1

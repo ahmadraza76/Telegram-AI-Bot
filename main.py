@@ -77,7 +77,7 @@ class EnhancedOstaadAIBot:
         # Callback query handler for enhanced inline buttons
         self.application.add_handler(CallbackQueryHandler(self.handlers.button_callback))
         
-        # ✅ Ahmad/creator/vision custom handler (only for keywords, should come before generic handler)
+        # Ahmad/creator/vision custom handler (only for keywords, should come before generic handler)
         self.application.add_handler(MessageHandler(intro_filter, reply_intro_vision))
 
         # Enhanced message handler for all text messages (must be last)

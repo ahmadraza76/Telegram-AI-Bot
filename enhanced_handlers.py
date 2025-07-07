@@ -203,7 +203,7 @@ class EnhancedOstaadHandlers:
 
 🚀 **Main tumhara Digital Ustad hoon!**
 
-{random.choice(Config.HINGLISH_PHRASES['greetings'])} 😎 Main har sawal ka jawab de sakta hoon!
+Are bhai 😎 Main har sawal ka jawab de sakta hoon!
 
 🧠 **Meri expertise:**
 🎓 **Padhai Master**: School se PhD tak - sab subjects covered!
@@ -226,7 +226,7 @@ class EnhancedOstaadHandlers:
 
 🚀 **I'm your Digital Ustad!**
 
-{random.choice(['Hey bhai', 'Suno yaar', 'Dekho'])} 😎 I can answer any question!
+Hey bhai 😎 I can answer any question!
 
 🧠 **My expertise:**
 🎓 **Study Master**: From school to PhD - all subjects covered!
@@ -594,7 +594,7 @@ class EnhancedOstaadHandlers:
 
 **Bas apna sawal type karo aur main expert guidance dunga! 🔥**
 
-{random.choice(Config.HINGLISH_PHRASES['encouragement'])} - Main tumhara digital ustad hoon! 🧑‍🏫"""
+Tension mat lo - Main tumhara digital ustad hoon! 🧑‍🏫"""
         
         keyboard = [
             [InlineKeyboardButton("◀️ Back to Main Menu", callback_data="main_menu")]
