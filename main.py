@@ -16,13 +16,19 @@ import random
 from ahmad_intro import get_creator_intro, get_ahmad_vision
 import re
 
-# Custom filter class for intro queries
+# Custom filter class for intro queries - ONLY for specific developer questions
 class IntroFilter(BaseFilter):
     def filter(self, message):
         if not message.text:
             return False
         text = message.text.lower()
-        return bool(re.search(r'\b(ahmad|creator|vision|founder|developer|banaya|malik)\b', text))
+        # Only trigger for very specific developer/creator questions
+        developer_keywords = [
+            'who made you', 'who created you', 'who is your developer', 
+            'who built you', 'tumhe kisne banaya', 'developer kaun hai',
+            'creator kaun hai', 'banane wala kaun', 'ahmad kaun hai'
+        ]
+        return any(keyword in text for keyword in developer_keywords)
 
 # Create instance of the custom filter
 intro_filter = filters.TEXT & IntroFilter()
@@ -82,7 +88,7 @@ class EnhancedOstaadAIBot:
         # Callback query handler for enhanced inline buttons
         self.application.add_handler(CallbackQueryHandler(self.handlers.button_callback))
         
-        # Ahmad/creator/vision custom handler (only for keywords, should come before generic handler)
+        # Ahmad/creator/vision custom handler (ONLY for specific developer questions)
         self.application.add_handler(MessageHandler(intro_filter, reply_intro_vision))
 
         # Enhanced message handler for all text messages (must be last)

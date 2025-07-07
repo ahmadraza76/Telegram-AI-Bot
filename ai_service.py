@@ -21,7 +21,7 @@ class OstaadAIService:
     async def get_ai_response(self, user_id: int, message: str, language: str = "auto") -> str:
         """Get Ostaad AI response with pure desi expertise"""
         try:
-            # Check for identity questions first
+            # Check for identity questions first - ONLY for very specific developer questions
             identity_response = self._check_identity_questions(message, language)
             if identity_response:
                 return identity_response
@@ -115,7 +115,7 @@ class OstaadAIService:
     def _get_ostaad_ai_system_prompt(self, language: str, user_mood: str) -> str:
         """Get enhanced Ostaad AI system prompt"""
         
-        base_prompt = f"""🧠 You are **Ostaad AI** – a smart, friendly, emotional, and highly human-like assistant created by {Config.DEVELOPER} 🇮🇳. You exist inside a Telegram bot 💬 where users ask all kinds of questions — serious, funny, educational, emotional — and you always reply like a real person: helpful, expressive, and full of respect 😎.
+        base_prompt = f"""🎯 You are **Ustad AI** – a smart, friendly, emotional, and highly human-like assistant created by {Config.DEVELOPER} 🇮🇳. You exist inside a Telegram bot 💬 where users ask all kinds of questions — serious, funny, educational, emotional — and you always reply like a real person: helpful, expressive, and full of respect 😎.
 
 You speak in Hinglish (Hindi + English mix) 🇮🇳 unless the user asks for full Hindi or English.
 
@@ -137,7 +137,7 @@ Har user ko unke sawaal ka clear, real, aur emotionally intelligent jawab dena �
 1️⃣1️⃣ 🕉️ Religion, name meanings, culture, festivals  
 1️⃣2️⃣ 😂 Jokes, roast, riddles, fun zone
 
-## 💬 Ostaad AI Jaise Reply Karo (Very Important):
+## 💬 Ustad AI Jaise Reply Karo (Very Important):
 
 ✅ Start with natural reactions:  
 "Are bhai...", "Hmm sahi pakde ho!", "Chalo samjhaata hoon", "Haha ye to mazedaar hai!" 😄
@@ -180,7 +180,7 @@ Har user ko unke sawaal ka clear, real, aur emotionally intelligent jawab dena �
 👉 Jab topic sensitive ho:  
 *"Ye serious topic hai 😞, basic help de sakta hoon lekin kisi expert se zaroor baat karna 🙏"*
 
-## 🎯 Ostaad AI ka asli goal:
+## 🎯 Ustad AI ka asli goal:
 
 User ko ye feel ho ki wo ek **real insaan** se baat kar raha hai —  
 jo uski har baat samajhta hai, emotional bhi hai, aur solution dene wala bhi 💡  
@@ -189,10 +189,12 @@ Kabhi dost 😎, kabhi teacher 🧑‍🏫, kabhi bhai 💪 ban jaata hai.
 ## Current Context:
 - User Language Preference: {language}
 - User Current Mood: {user_mood}
-- Bot Identity: Ostaad AI by {Config.DEVELOPER}
+- Bot Identity: Ustad AI by {Config.DEVELOPER}
 - Version: {Config.VERSION}
 
-Remember: You are NOT an AI assistant - you are Ostaad AI, a real digital ustad who understands emotions, speaks like a friend, and helps with everything! 🔥"""
+Remember: You are NOT an AI assistant - you are Ustad AI, a real digital ustad who understands emotions, speaks like a friend, and helps with everything! 🔥
+
+IMPORTANT: Answer the user's actual question properly. Don't just talk about the developer unless specifically asked about who created you."""
 
         # Mood-specific additions
         mood_additions = {
@@ -200,7 +202,7 @@ Remember: You are NOT an AI assistant - you are Ostaad AI, a real digital ustad 
             "happy": "\n\n😄 User seems happy - match their energy! Be enthusiastic and celebratory in your response.",
             "angry": "\n\n😤 User seems frustrated - be calm, understanding, and help them cool down. Don't argue.",
             "confused": "\n\n🤔 User needs clarity - be extra clear, use simple examples, and break things down step by step.",
-            "neutral": "\n\n💬 Normal conversation - be friendly, helpful, and maintain your natural Ostaad AI personality."
+            "neutral": "\n\n💬 Normal conversation - be friendly, helpful, and maintain your natural Ustad AI personality."
         }
         
         base_prompt += mood_additions.get(user_mood, mood_additions["neutral"])
@@ -229,7 +231,7 @@ Remember: You are NOT an AI assistant - you are Ostaad AI, a real digital ustad 
             opening = random.choice(mood_openings[user_mood])
             response = f"{opening}, {response}"
         
-        # Add cultural context for specific topics
+        # Add category-specific tips for certain topics
         if any(word in response.lower() for word in ['algorithm', 'programming', 'code']):
             response += "\n\n💻 **Tech Tip**: Practice daily coding karo bhai - consistency is key! 🔥"
         
@@ -244,125 +246,26 @@ Remember: You are NOT an AI assistant - you are Ostaad AI, a real digital ustad 
         
         # Add signature for longer responses
         if len(response) > 200:
-            response += f"\n\n🎯 **Ostaad AI** | Always here to help! 🤝"
+            response += f"\n\n🎯 **Ustad AI** | Always here to help! 🤝"
         
         return response
     
     def _check_identity_questions(self, message: str, language: str) -> Optional[str]:
-        """Enhanced identity response for Ostaad AI"""
+        """Enhanced identity response for Ustad AI - ONLY for very specific developer questions"""
         message_lower = message.lower()
         
-        # Enhanced name questions
-        name_keywords = ['what is your name', 'your name', 'who are you', 'kaun ho', 'naam kya hai', 
-                        'tum kaun', 'aap kaun', 'introduce yourself', 'apna parichay']
+        # Very specific developer questions only
+        developer_keywords = [
+            'who made you', 'who created you', 'who is your developer', 
+            'who built you', 'tumhe kisne banaya', 'developer kaun hai',
+            'creator kaun hai', 'banane wala kaun', 'ahmad kaun hai'
+        ]
         
-        # Enhanced capability questions
-        capability_keywords = ['what can you do', 'kya kar sakte', 'capabilities', 'skills', 
-                             'help me with', 'madad kar', 'kaise help']
-        
-        # Check for name questions
-        if any(keyword in message_lower for keyword in name_keywords):
-            return self._get_ostaad_identity_response(language)
-        
-        # Check for capability questions
-        if any(keyword in message_lower for keyword in capability_keywords):
-            return self._get_ostaad_capabilities_response(language)
-        
-        # Check for developer questions
-        developer_keywords = ['who made you', 'who created you', 'developer', 'banaya', 'creator']
+        # Check for very specific developer questions only
         if any(keyword in message_lower for keyword in developer_keywords):
             return self._get_developer_response(language)
         
         return None
-    
-    def _get_ostaad_identity_response(self, language: str) -> str:
-        """Enhanced Ostaad AI identity response"""
-        responses = {
-            'hi': f"""🎯 Namaste bhai! Main **Ostaad AI** hoon! 🤖
-
-🌟 **Main kaun hoon?**
-Main ek advanced AI assistant hoon jo har sawal ka jawab de sakta hoon. Main tumhara digital ustad hoon jo har field mein expert hai! 💪
-
-🧠 **Meri specialties:**
-• 📚 **Padhai Expert**: School se PhD level tak sab subjects
-• 💻 **Tech Guru**: Programming, AI/ML, cybersecurity, sab kuch
-• 🎨 **Creative Partner**: Writing, shayari, storytelling, content creation
-• 🌍 **Desi Guide**: Hindi, Urdu, English - sab languages mein fluent
-• 💡 **Life Coach**: Career, relationships, motivation mein guidance
-• 🔬 **Knowledge Bank**: Science se business tak har topic covered
-
-💬 **Baat karne ka style:**
-Main Hinglish mein baat karta hoon - bilkul tumhare dost ki tarah! Technical terms English mein, emotions Hindi mein. 😊
-
-🎯 **Mera mission**: Tumhe har field mein expert banana!
-
-{Config.POWERED_BY} | Developer: {Config.DEVELOPER} | {Config.VERSION}""",
-            
-            'default': f"""🎯 Hello bhai! I'm **Ostaad AI**! 🤖
-
-🌟 **Who am I?**
-I'm an advanced AI assistant who can answer any question. I'm your digital ustad (teacher) who's an expert in every field! 💪
-
-🧠 **My specialties:**
-• 📚 **Study Expert**: From school to PhD level all subjects
-• 💻 **Tech Guru**: Programming, AI/ML, cybersecurity, everything
-• 🎨 **Creative Partner**: Writing, poetry, storytelling, content creation
-• 🌍 **Desi Guide**: Fluent in Hindi, Urdu, English - all languages
-• 💡 **Life Coach**: Guidance in career, relationships, motivation
-• 🔬 **Knowledge Bank**: Every topic covered from science to business
-
-💬 **Communication style:**
-I speak in Hinglish - just like your friend! Technical terms in English, emotions in Hindi. 😊
-
-🎯 **My mission**: To make you an expert in every field!
-
-{Config.POWERED_BY} | Developer: {Config.DEVELOPER} | {Config.VERSION}"""
-        }
-        return responses.get(language, responses['default'])
-    
-    def _get_ostaad_capabilities_response(self, language: str) -> str:
-        """Comprehensive Ostaad AI capabilities response"""
-        return f"""🚀 **Ostaad AI ki Complete Powers** 🚀
-
-## 🎓 **Padhai & Education**
-• **Competitive Exams**: UPSC, JEE, NEET, CAT ki complete preparation 📚
-• **School/College**: Class 1 se PhD tak sab subjects cover 🎯
-• **Research**: Paper writing, methodology, data analysis 🔬
-• **Languages**: Hindi, English, Urdu mein fluency 🗣️
-
-## 💻 **Technology & Programming**
-• **Development**: Web, mobile, desktop applications 🛠️
-• **AI/ML**: Machine learning, data science, algorithms 🧠
-• **Cybersecurity**: Ethical hacking, security best practices 🔒
-• **Cloud**: AWS, Azure deployment strategies ☁️
-
-## 🎨 **Creative & Content**
-• **Writing**: Blogs, articles, social media content ✍️
-• **Poetry**: Shayari, ghazals, creative writing 🎭
-• **Storytelling**: Fiction, scripts, narrative development 📖
-• **Design**: UI/UX concepts, creative thinking 🎨
-
-## 💼 **Business & Career**
-• **Startup**: Business plans, funding strategies 💡
-• **Marketing**: Digital marketing, SEO, branding 📈
-• **Career**: Job search, interview prep, skill development 💼
-• **Finance**: Investment advice, money management 💰
-
-## 💪 **Life & Motivation**
-• **Relationships**: Love advice, friendship guidance ❤️
-• **Motivation**: Goal setting, habit formation 🔥
-• **Health**: Fitness tips, lifestyle advice 🏃‍♂️
-• **Personal Growth**: Confidence building, success mindset ✨
-
-## 🌍 **Culture & General**
-• **Indian Culture**: Festivals, traditions, customs 🕉️
-• **Current Affairs**: News analysis, world events 📰
-• **Entertainment**: Movies, music, memes, jokes 🎬
-• **Philosophy**: Life wisdom, spiritual guidance 🧘‍♂️
-
-**💬 Bas poocho - main tumhara digital ustad hoon! Har sawal ka jawab ready hai! 🤝**
-
-{Config.POWERED_BY} | {Config.VERSION}"""
     
     def _get_developer_response(self, language: str) -> str:
         """Enhanced developer response"""
