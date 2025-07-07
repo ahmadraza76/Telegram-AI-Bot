@@ -141,15 +141,6 @@ class Config:
         "ml", "as", "ne", "si"
     ]
     
-    # Hinglish phrases for natural conversation
-    HINGLISH_PHRASES = {
-        "greetings": ["Are bhai", "Kya haal", "Suno yaar", "Dekho bhai"],
-        "agreement": ["Bilkul sahi", "Haan yaar", "Exactly", "Sahi pakde"],
-        "explanation": ["Chalo samjhaata hoon", "Dekho aise hai", "Simple hai bhai"],
-        "encouragement": ["Tension mat lo", "Ho jaayega", "Koi baat nahi", "Sab theek hai"],
-        "excitement": ["Waah bhai", "Bahut badhiya", "Sahi hai", "Mast hai"]
-    }
-    
     # ==============================================
     # 🔒 Enhanced Security & Rate Limiting
     # ==============================================

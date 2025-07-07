@@ -6,7 +6,7 @@ import logging
 import asyncio
 import sys
 import os
-from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackQueryHandler
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackQueryHandler, BaseFilter
 from config import Config
 from enhanced_handlers import EnhancedOstaadHandlers
 from utils import Utils
@@ -15,12 +15,16 @@ import random
 from ahmad_intro import get_creator_intro, get_ahmad_vision
 import re
 
-# Custom filter for only "ahmad", "creator", etc.
-def is_intro_query(message):
-    text = message.text.lower()
-    return bool(re.search(r'\b(ahmad|creator|vision|founder)\b', text))
+# Custom filter class for intro queries
+class IntroFilter(BaseFilter):
+    def filter(self, message):
+        if not message.text:
+            return False
+        text = message.text.lower()
+        return bool(re.search(r'\b(ahmad|creator|vision|founder|developer|banaya|malik)\b', text))
 
-intro_filter = filters.TEXT & filters.Create(is_intro_query)
+# Create instance of the custom filter
+intro_filter = filters.TEXT & IntroFilter()
 
 async def reply_intro_vision(update, context):
     if random.random() < 0.5:
