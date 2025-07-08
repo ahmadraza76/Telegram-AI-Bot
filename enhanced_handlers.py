@@ -199,7 +199,7 @@ class EnhancedOstaadHandlers:
         name = first_name or "bhai"
         
         messages = {
-            'hi': f"""🎯 **Namaste {name}! Ostaad AI {Config.VERSION} mein aapka swagat hai!** 🎯
+            'hi': f"""🎯 **Namaste {name}! Ustad AI {Config.VERSION} mein aapka swagat hai!** 🎯
 
 🚀 **Main tumhara Digital Ustad hoon!**
 
