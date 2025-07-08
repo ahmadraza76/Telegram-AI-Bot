@@ -7,38 +7,9 @@ import asyncio
 import sys
 import os
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackQueryHandler
-from telegram.ext.filters import BaseFilter
 from config import Config
 from enhanced_handlers import EnhancedOstaadHandlers
 from utils import Utils
-
-import random
-from ahmad_intro import get_creator_intro, get_ahmad_vision
-import re
-
-# Custom filter class for intro queries - ONLY for specific developer questions
-class IntroFilter(BaseFilter):
-    def filter(self, message):
-        if not message.text:
-            return False
-        text = message.text.lower()
-        # Only trigger for very specific developer/creator questions
-        developer_keywords = [
-            'who made you', 'who created you', 'who is your developer', 
-            'who built you', 'tumhe kisne banaya', 'developer kaun hai',
-            'creator kaun hai', 'banane wala kaun', 'ahmad kaun hai'
-        ]
-        return any(keyword in text for keyword in developer_keywords)
-
-# Create instance of the custom filter
-intro_filter = filters.TEXT & IntroFilter()
-
-async def reply_intro_vision(update, context):
-    if random.random() < 0.5:
-        reply = get_creator_intro()
-    else:
-        reply = get_ahmad_vision()
-    await update.message.reply_text(reply, parse_mode="Markdown")
 
 # Configure enhanced logging
 logging.basicConfig(
@@ -88,10 +59,7 @@ class EnhancedOstaadAIBot:
         # Callback query handler for enhanced inline buttons
         self.application.add_handler(CallbackQueryHandler(self.handlers.button_callback))
         
-        # Ahmad/creator/vision custom handler (ONLY for specific developer questions)
-        self.application.add_handler(MessageHandler(intro_filter, reply_intro_vision))
-
-        # Enhanced message handler for all text messages (must be last)
+        # Enhanced message handler for all text messages (NO AHMAD INTRO FILTER)
         self.application.add_handler(
             MessageHandler(filters.TEXT & ~filters.COMMAND, self.handlers.handle_message)
         )
