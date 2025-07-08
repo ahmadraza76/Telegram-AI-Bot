@@ -252,20 +252,17 @@ Remember: You are Ustad AI, a real digital ustad who understands emotions, speak
         return response
     
     def _check_identity_questions(self, message: str, language: str) -> Optional[str]:
-        """Enhanced identity response for Ustad AI - DISABLED to prevent Ahmad obsession"""
-        # COMPLETELY DISABLE identity responses to fix Ahmad obsession issue
-        return None
-        
+        """Enhanced identity response for Ustad AI - ONLY for very specific developer questions"""
         message_lower = message.lower()
         
         # Very specific developer questions only
         developer_keywords = [
-            'who made you', 'who created you', 'who is your developer', 
-            'who built you', 'tumhe kisne banaya', 'developer kaun hai',
-            'creator kaun hai', 'banane wala kaun', 'ahmad kaun hai'
+            'who made you', 'who created you', 'who is your developer', 'who built you',
+            'tumhe kisne banaya', 'developer kaun hai', 'creator kaun hai', 'banane wala kaun',
+            'ahmad kaun hai', 'ahmad ke bare me', 'ahmad about'
         ]
         
-        # Check for very specific developer questions only
+        # ONLY respond if user specifically asks about developer/creator
         if any(keyword in message_lower for keyword in developer_keywords):
             return self._get_developer_response(language)
         
