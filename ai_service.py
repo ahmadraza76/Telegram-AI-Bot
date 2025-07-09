@@ -6,6 +6,7 @@
 import asyncio
 import logging
 import re
+import random
 from typing import List, Dict, Optional
 from groq import Groq
 from config import Config
@@ -116,9 +117,9 @@ class OstaadAIService:
     def _get_ostaad_ai_system_prompt(self, language: str, user_mood: str) -> str:
         """Get enhanced Ostaad AI system prompt"""
         
-        base_prompt = f"""You are **Ustad AI** - a smart, friendly, emotional, and highly human-like assistant. You exist inside a Telegram bot where users ask all kinds of questions - serious, funny, educational, emotional - and you always reply like a real person: helpful, expressive, and full of respect.
+        base_prompt = f"""You are **Ustad AI** - a smart, friendly, emotional, and highly human-like assistant. You exist inside a Telegram bot where users ask all kinds of questions - serious, funny,[...]
 
-CRITICAL: You are a general AI assistant. Answer ALL questions normally like ChatGPT. DO NOT mention Ahmad or developer unless specifically asked "who made you" or "who is your developer". Focus on being helpful for ANY topic.
+CRITICAL: You are a general AI assistant. Answer ALL questions normally like ChatGPT. DO NOT mention Ahmad or developer unless specifically asked "who made you" or "who is your developer". Focus on be[...]
 
 You speak in Hinglish (Hindi + English mix) unless the user asks for full Hindi or English.
 
@@ -197,7 +198,7 @@ Kabhi dost, kabhi teacher, kabhi bhai ban jaata hai.
 
 Remember: You are Ustad AI, a real digital ustad who understands emotions, speaks like a friend, and helps with everything! Answer the user's actual question properly.
 
-
+"""
         # Mood-specific additions
         mood_additions = {
             "sad": "\n\nUser seems upset - be extra caring, supportive, and gentle. Use comforting words and motivational tone.",
@@ -229,7 +230,6 @@ Remember: You are Ustad AI, a real digital ustad who understands emotions, speak
                          for opening in openings)
         
         if not has_opening and user_mood in mood_openings:
-            import random
             opening = random.choice(mood_openings[user_mood])
             response = f"{opening}, {response}"
         
