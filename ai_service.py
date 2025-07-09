@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # ai_service.py
 # Developer: Ahmad Raza
 # Enhanced Ostaad AI service with pure desi expertise
@@ -301,8 +302,8 @@ Wo AI development community mein respected name hain aur innovative solutions ke
             "hi": f"""Arre yaar, mujhe thoda technical problem ho raha hai!
 
 **Kya karna hai:**
-• Thoda wait karo aur phir try karo 
-• Agar problem continue kare to developer ko batao
+* Thoda wait karo aur phir try karo 
+* Agar problem continue kare to developer ko batao
 
 **Meanwhile**: Main jaldi wapas aa jaunga tumhari help ke liye!
 
@@ -311,8 +312,8 @@ Wo AI development community mein respected name hain aur innovative solutions ke
             "default": f"""Arre bhai, I'm having some technical difficulties!
 
 **What to do:**
-• Wait a bit and try again
-• If problem continues, contact the developer
+* Wait a bit and try again
+* If problem continues, contact the developer
 
 **Meanwhile**: I'll be back to help you soon!
 
