@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # main.py
 # Developer: Ahmad Raza
 # Enhanced Ostaad AI Premium Telegram Bot - Main Application
@@ -6,6 +7,17 @@ import logging
 import asyncio
 import sys
 import os
+import locale
+
+# Set UTF-8 encoding
+try:
+    locale.setlocale(locale.LC_ALL, 'C.UTF-8')
+except:
+    try:
+        locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+    except:
+        pass
+
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackQueryHandler
 from config import Config
 from enhanced_handlers import EnhancedOstaadHandlers
@@ -71,75 +83,75 @@ class EnhancedOstaadAIBot:
         user_info = Utils.get_user_info(update)
         
         if not Utils.is_admin(user_info['id']):
-            await update.message.reply_text("🚫 Admin access chahiye bhai statistics ke liye! 😅")
+            await update.message.reply_text("Admin access chahiye bhai statistics ke liye!")
             return
         
-        stats_message = f"""📊 **{Config.BOT_NAME} Statistics**
+        stats_message = f"""**{Config.BOT_NAME} Statistics**
 
-🤖 **System Info:**
+**System Info:**
 • Version: {Config.VERSION}
 • Model: {Config.DEFAULT_MODEL}
 • Categories: {len(Config.KNOWLEDGE_CATEGORIES)}
 • Languages: {len(Config.SUPPORTED_LANGUAGES)}
 
-🎯 **Performance:**
+**Performance:**
 • Max Tokens: {Config.MAX_TOKENS}
 • Temperature: {Config.TEMPERATURE}
 • Response Timeout: {Config.REQUEST_TIMEOUT}s
 • Human-like Score: {Config.HUMAN_LIKE_SCORE}
 
-👨‍💻 **Developer**: {Config.DEVELOPER}
-⚡ **Engine**: Pure Desi AI Excellence
+**Developer**: {Config.DEVELOPER}
+**Engine**: Pure Desi AI Excellence
 
-🟢 **Status**: Fully Operational aur Ready! 🔥"""
+**Status**: Fully Operational aur Ready!"""
         
         await update.message.reply_text(stats_message, parse_mode='Markdown')
     
     async def _categories_command(self, update, context):
         """Show available knowledge categories with desi style"""
-        categories_message = f"""🎯 **{Config.BOT_NAME} Knowledge Categories**
+        categories_message = f"""**{Config.BOT_NAME} Knowledge Categories**
 
-🎓 **Padhai & Education**
+**Padhai & Education**
 • School/College subjects (All levels)
 • Competitive Exams (UPSC, JEE, NEET, CAT)
 • Homework aur assignment help
 
-💼 **Career & Job Guidance**
+**Career & Job Guidance**
 • Job search strategies
 • Interview preparation
 • Resume writing aur improvement
 
-💻 **Technology & Programming**
+**Technology & Programming**
 • Coding aur development
 • AI/ML concepts
 • Tech troubleshooting
 
-💰 **Online Earning & Business**
+**Online Earning & Business**
 • Freelancing tips
 • Business ideas aur planning
 • Investment guidance
 
-❤️ **Love & Relationships**
+**Love & Relationships**
 • Dating advice
 • Relationship problems
 • Communication tips
 
-🗣️ **Language Learning**
+**Language Learning**
 • English speaking improvement
 • Grammar aur vocabulary
 • Translation help
 
-🎬 **Entertainment & Fun**
+**Entertainment & Fun**
 • Movies aur music recommendations
 • Jokes aur memes
 • Timepass content
 
-💪 **Motivation & Life Coaching**
+**Motivation & Life Coaching**
 • Success mindset
 • Goal setting
 • Confidence building
 
-💬 **Kuch bhi poocho - main har category mein expert hoon! 🔥**"""
+**Kuch bhi poocho - main har category mein expert hoon!**"""
         
         await update.message.reply_text(categories_message, parse_mode='Markdown')
     
@@ -155,10 +167,10 @@ class EnhancedOstaadAIBot:
             del self.handlers.user_sessions[user_info['id']]
         
         await update.message.reply_text(
-            "🔄 **Conversation Reset Ho Gaya!**\n\n"
+            "**Conversation Reset Ho Gaya!**\n\n"
             "Tumhara conversation history clear ho gaya hai bhai! "
-            "Ab fresh start kar sakte ho kisi bhi topic ke saath! 🚀\n\n"
-            "💬 Aaj kya explore karna chahte ho? 🎯"
+            "Ab fresh start kar sakte ho kisi bhi topic ke saath!\n\n"
+            "Aaj kya explore karna chahte ho?"
         )
     
     async def start_bot(self):
@@ -205,30 +217,30 @@ class EnhancedOstaadAIBot:
             )
             
             # Enhanced startup message
-            logger.info("🚀 Ostaad AI is now LIVE and ready to serve!")
-            logger.info("🎯 Pure desi expertise activated")
-            logger.info("💬 Ready to handle any question with human-like intelligence")
-            logger.info("🌟 Press Ctrl+C to stop the bot")
+            logger.info("Ostaad AI is now LIVE and ready to serve!")
+            logger.info("Pure desi expertise activated")
+            logger.info("Ready to handle any question with human-like intelligence")
+            logger.info("Press Ctrl+C to stop the bot")
             
             # Run until interrupted
             try:
                 await asyncio.Event().wait()
             except KeyboardInterrupt:
-                logger.info("🛑 Received stop signal - Shutting down gracefully")
+                logger.info("Received stop signal - Shutting down gracefully")
             
         except Exception as e:
-            logger.error(f"❌ Failed to start enhanced Ostaad AI bot: {e}")
+            logger.error(f"Failed to start enhanced Ostaad AI bot: {e}")
             raise
         finally:
             # Enhanced cleanup
             try:
-                logger.info("🔄 Performing cleanup operations...")
+                logger.info("Performing cleanup operations...")
                 await self.application.updater.stop()
                 await self.application.stop()
                 await self.application.shutdown()
-                logger.info("✅ Cleanup completed successfully")
+                logger.info("Cleanup completed successfully")
             except Exception as e:
-                logger.error(f"❌ Error during cleanup: {e}")
+                logger.error(f"Error during cleanup: {e}")
     
     def run(self):
         """Run the enhanced Ostaad AI bot"""
@@ -236,30 +248,30 @@ class EnhancedOstaadAIBot:
             # Check if event loop is already running
             try:
                 loop = asyncio.get_running_loop()
-                logger.info("📡 Event loop detected, creating task")
+                logger.info("Event loop detected, creating task")
                 task = loop.create_task(self.start_bot())
                 return task
             except RuntimeError:
                 # No event loop running, create new one
-                logger.info("🔄 Creating new event loop")
+                logger.info("Creating new event loop")
                 if sys.platform == 'win32':
                     asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
                 asyncio.run(self.start_bot())
                 
         except KeyboardInterrupt:
-            logger.info("👋 Ostaad AI stopped by user")
+            logger.info("Ostaad AI stopped by user")
         except Exception as e:
-            logger.error(f"💥 Ostaad AI crashed: {e}")
+            logger.error(f"Ostaad AI crashed: {e}")
             raise
 
 def main():
     """Enhanced main function"""
     try:
-        print("🎯 Initializing Ostaad AI Enhanced...")
+        print("Initializing Ostaad AI Enhanced...")
         bot = EnhancedOstaadAIBot()
         bot.run()
     except Exception as e:
-        logger.error(f"💥 Failed to start Ostaad AI: {e}")
+        logger.error(f"Failed to start Ostaad AI: {e}")
         sys.exit(1)
 
 if __name__ == '__main__':

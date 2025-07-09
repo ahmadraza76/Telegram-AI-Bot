@@ -8,6 +8,9 @@ FROM python:3.11-slim-bullseye
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHONIOENCODING=utf-8
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
 
 # Install system dependencies including FFmpeg
 RUN apt-get update && apt-get install -y \
@@ -30,6 +33,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy project files
 COPY . .
+
+# Fix encoding issues
+RUN find . -name "*.py" -exec sed -i '1i# -*- coding: utf-8 -*-' {} \;
 
 # Create necessary directories
 RUN mkdir -p logs temp temp/music

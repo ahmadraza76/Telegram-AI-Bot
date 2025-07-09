@@ -199,49 +199,49 @@ class EnhancedOstaadHandlers:
         name = first_name or "bhai"
         
         messages = {
-            'hi': f"""🎯 **Namaste {name}! Ustad AI {Config.VERSION} mein aapka swagat hai!** 🎯
+            'hi': f"""**Namaste {name}! Ustad AI {Config.VERSION} mein aapka swagat hai!**
 
-🚀 **Main tumhara Digital Ustad hoon!**
+**Main tumhara Digital Ustad hoon!**
 
-Are bhai 😎 Main har sawal ka jawab de sakta hoon!
+Are bhai Main har sawal ka jawab de sakta hoon!
 
-🧠 **Meri expertise:**
-🎓 **Padhai Master**: School se PhD tak - sab subjects covered!
-💼 **Career Guru**: Job, interview, resume - sab guidance ready!
-💻 **Tech Expert**: Programming, AI, bots - technical sab kuch!
-💰 **Earning Guide**: Online paise kamane ke sab tareeke!
-❤️ **Love Advisor**: Relationships, dosti - dil ki baat samjhta hoon!
-🗣️ **Language Teacher**: English, Hindi - fluency improve karo!
-🎬 **Entertainment**: Movies, memes, jokes - timepass bhi hai!
-💪 **Motivator**: Life coach, success mindset - confidence boost!
+**Meri expertise:**
+**Padhai Master**: School se PhD tak - sab subjects covered!
+**Career Guru**: Job, interview, resume - sab guidance ready!
+**Tech Expert**: Programming, AI, bots - technical sab kuch!
+**Earning Guide**: Online paise kamane ke sab tareeke!
+**Love Advisor**: Relationships, dosti - dil ki baat samjhta hoon!
+**Language Teacher**: English, Hindi - fluency improve karo!
+**Entertainment**: Movies, memes, jokes - timepass bhi hai!
+**Motivator**: Life coach, success mindset - confidence boost!
 
-🔥 **Bilkul human jaisa conversation - emotions, jokes, sab samjhta hoon!**
+**Bilkul human jaisa conversation - emotions, jokes, sab samjhta hoon!**
 
-💬 **Kuch bhi poocho - main tumhara digital dost hoon!**
-📚 Padhai se lekar life advice tak, har field mein expert!
+**Kuch bhi poocho - main tumhara digital dost hoon!**
+Padhai se lekar life advice tak, har field mein expert!
 
 {Config.POWERED_BY} | Developer: {Config.DEVELOPER}""",
             
-            'default': f"""🎯 **Hello {name}! Welcome to Ostaad AI {Config.VERSION}!** 🎯
+            'default': f"""**Hello {name}! Welcome to Ostaad AI {Config.VERSION}!**
 
-🚀 **I'm your Digital Ustad!**
+**I'm your Digital Ustad!**
 
-Hey bhai 😎 I can answer any question!
+Hey bhai I can answer any question!
 
-🧠 **My expertise:**
-🎓 **Study Master**: From school to PhD - all subjects covered!
-💼 **Career Guru**: Jobs, interviews, resume - complete guidance!
-💻 **Tech Expert**: Programming, AI, bots - all technical stuff!
-💰 **Earning Guide**: All ways to earn money online!
-❤️ **Love Advisor**: Relationships, friendship - understand emotions!
-🗣️ **Language Teacher**: English, Hindi - improve fluency!
-🎬 **Entertainment**: Movies, memes, jokes - fun time too!
-💪 **Motivator**: Life coach, success mindset - confidence boost!
+**My expertise:**
+**Study Master**: From school to PhD - all subjects covered!
+**Career Guru**: Jobs, interviews, resume - complete guidance!
+**Tech Expert**: Programming, AI, bots - all technical stuff!
+**Earning Guide**: All ways to earn money online!
+**Love Advisor**: Relationships, friendship - understand emotions!
+**Language Teacher**: English, Hindi - improve fluency!
+**Entertainment**: Movies, memes, jokes - fun time too!
+**Motivator**: Life coach, success mindset - confidence boost!
 
-🔥 **Completely human-like conversation - emotions, jokes, everything!**
+**Completely human-like conversation - emotions, jokes, everything!**
 
-💬 **Ask anything - I'm your digital friend!**
-📚 From studies to life advice, expert in every field!
+**Ask anything - I'm your digital friend!**
+From studies to life advice, expert in every field!
 
 {Config.POWERED_BY} | Developer: {Config.DEVELOPER}"""
         }
@@ -694,30 +694,30 @@ Tension mat lo - Main tumhara digital ustad hoon! 🧑‍🏫"""
 
     async def _show_help_message(self, query, language: str):
         """Show help message with desi style"""
-        help_message = f"""🆘 **Ostaad AI Help Guide** 🆘
+        help_message = f"""**Ostaad AI Help Guide**
 
-📚 **Kaise use kare:**
-• Koi bhi sawal type karo - main samjhaunga! 💬
-• Categories select kar sakte ho quick help ke liye 🎯
-• Main Hinglish mein baat karta hoon - natural feel! 😊
+**Kaise use kare:**
+• Koi bhi sawal type karo - main samjhaunga!
+• Categories select kar sakte ho quick help ke liye
+• Main Hinglish mein baat karta hoon - natural feel!
 
-🔧 **Available Commands:**
+**Available Commands:**
 /start - Welcome message aur main menu
 /help - Ye help guide
 /info - Ostaad AI ke baare mein details
 /reset - Conversation history clear karo
 
-💡 **Best Tips:**
-1. Clear aur specific questions poocho 🎯
-2. Context do agar complex topic hai 📚
-3. Feedback do - main improve karta rehta hoon! ✨
+**Best Tips:**
+1. Clear aur specific questions poocho
+2. Context do agar complex topic hai
+3. Feedback do - main improve karta rehta hoon!
 
-⚙️ **Technical Details:**
+**Technical Details:**
 • AI Model: {Config.DEFAULT_MODEL}
 • Developer: {Config.DEVELOPER}
 • Version: {Config.VERSION}
 
-🟢 **Status**: Fully Active aur Ready! 🔥
+**Status**: Fully Active aur Ready!
 
 {Config.POWERED_BY}"""
         
@@ -733,33 +733,33 @@ Tension mat lo - Main tumhara digital ustad hoon! 🧑‍🏫"""
 
     async def _show_info_message(self, query, language: str):
         """Show info message with desi style"""
-        info_message = f"""🤖 **Ostaad AI System Information** 🤖
+        info_message = f"""**Ostaad AI System Information**
 
-⚙️ **Core Architecture:**
-├─ AI Model: {Config.DEFAULT_MODEL}
-├─ Framework: Ostaad AI Engine
-├─ Language: Python 3.11
-└─ Security: Enterprise-Grade
+**Core Architecture:**
+AI Model: {Config.DEFAULT_MODEL}
+Framework: Ostaad AI Engine
+Language: Python 3.11
+Security: Enterprise-Grade
 
-🌟 **Key Capabilities:**
-├─ 12+ Categories mein expertise 🎯
-├─ Human-like conversation style 😊
-├─ Emotional intelligence 💝
-├─ Desi context understanding 🇮🇳
+**Key Capabilities:**
+12+ Categories mein expertise
+Human-like conversation style
+Emotional intelligence
+Desi context understanding
 
-📋 **System Details:**
-├─ Developer: {Config.DEVELOPER}
-├─ Specialization: Pure Desi AI Assistant
-├─ Platform: Telegram Messenger
-├─ Version: {Config.VERSION}
-└─ Last Updated: December 2024
+**System Details:**
+Developer: {Config.DEVELOPER}
+Specialization: Pure Desi AI Assistant
+Platform: Telegram Messenger
+Version: {Config.VERSION}
+Last Updated: December 2024
 
-💡 **Getting Started:**
+**Getting Started:**
 1. /start se shuru karo
 2. Category select karo ya direct question poocho
-3. Enjoy human-like conversation! 🔥
+3. Enjoy human-like conversation!
 
-🟢 **System Status**: Fully Operational! 💪
+**System Status**: Fully Operational!
 
 {Config.POWERED_BY}"""
         
@@ -775,9 +775,9 @@ Tension mat lo - Main tumhara digital ustad hoon! 🧑‍🏫"""
 
     async def _show_language_settings(self, query, language: str):
         """Show language settings with desi style"""
-        lang_message = f"""🌐 **Language Settings** 🌐
+        lang_message = f"""**Language Settings**
 
-🔹 **Current Language**: {language.upper()}
+**Current Language**: {language.upper()}
 
 Choose your preferred language:
 
@@ -787,7 +787,7 @@ Choose your preferred language:
 • Urdu (اردو) - Supported
 • Bengali (বাংলা) - Supported
 
-📌 **Note**: Main mainly Hinglish mein baat karta hoon - best of both worlds! 😎
+**Note**: Main mainly Hinglish mein baat karta hoon - best of both worlds!
 
 Aur languages bhi support karta hoon basic level pe.
 
@@ -814,25 +814,25 @@ Aur languages bhi support karta hoon basic level pe.
     async def _send_desi_error_response(self, update: Update, user_info: dict, language: str):
         """Send enhanced error response with desi style"""
         error_messages = [
-            "🙏 Arre yaar, mujhe thoda technical problem ho raha hai!",
-            "😅 Oops! Kuch gadbad ho gayi, phir se try karo bhai!",
-            "🔧 Technical issue aa gaya, 2 minute wait karo!",
-            "⚠️ Server mein thoda issue hai, jaldi theek kar deta hoon!"
+            "Arre yaar, mujhe thoda technical problem ho raha hai!",
+            "Oops! Kuch gadbad ho gayi, phir se try karo bhai!",
+            "Technical issue aa gaya, 2 minute wait karo!",
+            "Server mein thoda issue hai, jaldi theek kar deta hoon!"
         ]
         
         error_msg = f"""{random.choice(error_messages)}
 
-🔧 **Kya karna hai:**
+**Kya karna hai:**
 • Thoda wait karo aur phir try karo 
 • Agar problem continue kare to developer ko batao
 
-💡 **Meanwhile**: Main jaldi wapas aa jaunga tumhari help ke liye! 💪
+**Meanwhile**: Main jaldi wapas aa jaunga tumhari help ke liye!
 
-{Config.POWERED_BY} | Hamesha seekhta rehta hoon! 🧠"""
+{Config.POWERED_BY} | Hamesha seekhta rehta hoon!"""
         
         keyboard = [
-            [InlineKeyboardButton("🔄 Try Again", callback_data="new_question")],
-            [InlineKeyboardButton("🏠 Main Menu", callback_data="main_menu")]
+            [InlineKeyboardButton("Try Again", callback_data="new_question")],
+            [InlineKeyboardButton("Main Menu", callback_data="main_menu")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
@@ -852,12 +852,12 @@ Aur languages bhi support karta hoon basic level pe.
         user_info = self.utils.get_user_info(update)
         
         if not self.utils.is_admin(user_info['id']):
-            await update.message.reply_text("🚫 Admin access required bhai! 😅")
+            await update.message.reply_text("Admin access required bhai!")
             return
         
         if not context.args:
-            await update.message.reply_text("📢 Broadcast message provide karo!\nExample: /broadcast Hello everyone!")
+            await update.message.reply_text("Broadcast message provide karo!\nExample: /broadcast Hello everyone!")
             return
         
         message = ' '.join(context.args)
-        await update.message.reply_text(f"📢 Broadcast ready: {message}\n\n(Feature coming soon! 🚀)")
+        await update.message.reply_text(f"Broadcast ready: {message}\n\n(Feature coming soon!)")
