@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # enhanced_handlers.py
 # Developer: Ahmad Raza
 # Enhanced Ostaad AI Premium Telegram bot handlers with pure desi expertise
@@ -24,7 +25,7 @@ class EnhancedOstaadHandlers:
         self.broadcast_messages = {}
         self.user_sessions = {}
         
-        logger.info("🎯 Enhanced Ostaad AI handlers initialized with pure desi expertise")
+        logger.info("Enhanced Ostaad AI handlers initialized with pure desi expertise")
     
     async def start_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Enhanced /start command with desi welcome"""
@@ -102,8 +103,8 @@ class EnhancedOstaadHandlers:
             )
             
         except Exception as e:
-            logger.error(f"❌ Error in enhanced start_command: {e}")
-            await update.message.reply_text("⚠️ Arre yaar, kuch gadbad ho gayi! Phir se try karo 🙏")
+            logger.error(f"Error in enhanced start_command: {e}")
+            await update.message.reply_text("Arre yaar, kuch gadbad ho gayi! Phir se try karo")
 
     async def handle_message(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Enhanced message handler with desi expertise"""
@@ -111,7 +112,7 @@ class EnhancedOstaadHandlers:
             user_info = self.utils.get_user_info(update)
             user_message = update.message.text
             
-            logger.info(f"📨 Processing desi query from user {user_info['id']}: '{user_message[:100]}...'")
+            logger.info(f"Processing desi query from user {user_info['id']}: '{user_message[:100]}...'")
             
             # Update user session
             if user_info['id'] in self.user_sessions:
@@ -131,7 +132,7 @@ class EnhancedOstaadHandlers:
             if user_info['id'] in self.user_sessions:
                 self.user_sessions[user_info['id']]['categories_explored'].add(category)
             
-            logger.info(f"🎯 Classified query as '{category}' category")
+            logger.info(f"Classified query as '{category}' category")
             
             # Process enhanced AI response
             await self.handle_enhanced_ai_response(
@@ -139,7 +140,7 @@ class EnhancedOstaadHandlers:
             )
             
         except Exception as e:
-            logger.error(f"❌ Error in enhanced handle_message: {e}")
+            logger.error(f"Error in enhanced handle_message: {e}")
             await self._send_desi_error_response(update, user_info, preferred_lang)
 
     async def handle_enhanced_ai_response(self, update: Update, context: ContextTypes.DEFAULT_TYPE,
@@ -191,7 +192,7 @@ class EnhancedOstaadHandlers:
             )
             
         except Exception as e:
-            logger.error(f"❌ Enhanced AI response error: {e}")
+            logger.error(f"Enhanced AI response error: {e}")
             await self._send_desi_error_response(update, user_info, preferred_lang)
 
     def _get_desi_welcome_message(self, language: str, first_name: str) -> str:
@@ -297,16 +298,16 @@ From studies to life advice, expert in every field!
         
         # Add category-specific tips and context
         category_tips = {
-            "padhai_education": "\n\n📚 **Padhai Tip**: Regular practice aur revision karte raho bhai! 💪",
-            "career_job": "\n\n💼 **Career Advice**: Confidence rakho aur preparation solid karo! 📈",
-            "programming_tech": "\n\n💻 **Tech Tip**: Daily coding practice karo - consistency is key! 🔥",
-            "online_earning": "\n\n💰 **Earning Tip**: Patience rakho aur skills develop karte raho! ✨",
-            "love_relationships": "\n\n❤️ **Love Advice**: Dil ki suno lekin dimag bhi use karo! 🤗",
-            "language_learning": "\n\n📖 **Language Tip**: Daily practice aur confidence building important hai! 🗣️",
-            "entertainment": "\n\n🎬 **Fun Fact**: Entertainment bhi learning ka part hai! 😄",
-            "motivation": "\n\n💪 **Motivation**: Har din ek step aage badhte raho! 🔥",
-            "health_fitness": "\n\n🏃‍♂️ **Health Tip**: Consistency aur balance maintain karo! 🍎",
-            "religion_culture": "\n\n🕉️ **Cultural Wisdom**: Traditions mein bahut gyaan chupa hai! 🙏"
+            "padhai_education": "\n\n**Padhai Tip**: Regular practice aur revision karte raho bhai!",
+            "career_job": "\n\n**Career Advice**: Confidence rakho aur preparation solid karo!",
+            "programming_tech": "\n\n**Tech Tip**: Daily coding practice karo - consistency is key!",
+            "online_earning": "\n\n**Earning Tip**: Patience rakho aur skills develop karte raho!",
+            "love_relationships": "\n\n**Love Advice**: Dil ki suno lekin dimag bhi use karo!",
+            "language_learning": "\n\n**Language Tip**: Daily practice aur confidence building important hai!",
+            "entertainment": "\n\n**Fun Fact**: Entertainment bhi learning ka part hai!",
+            "motivation": "\n\n**Motivation**: Har din ek step aage badhte raho!",
+            "health_fitness": "\n\n**Health Tip**: Consistency aur balance maintain karo!",
+            "religion_culture": "\n\n**Cultural Wisdom**: Traditions mein bahut gyaan chupa hai!"
         }
         
         if category in category_tips:
@@ -314,7 +315,7 @@ From studies to life advice, expert in every field!
         
         # Add signature for longer responses
         if len(response) > 300:
-            response += f"\n\n🎯 **Ostaad AI** | Hamesha tumhare saath! 🤝"
+            response += f"\n\n**Ostaad AI** | Hamesha tumhare saath!"
         
         return response
 
@@ -324,8 +325,8 @@ From studies to life advice, expert in every field!
         # Base keyboard with back button
         keyboard = [
             [
-                InlineKeyboardButton("◀️ Main Menu", callback_data="main_menu"),
-                InlineKeyboardButton("🔄 New Question", callback_data="new_question")
+                InlineKeyboardButton("Main Menu", callback_data="main_menu"),
+                InlineKeyboardButton("New Question", callback_data="new_question")
             ]
         ]
         
@@ -405,8 +406,8 @@ From studies to life advice, expert in every field!
                 await self._handle_standard_callbacks(query, callback_data, user_info, preferred_lang)
                 
         except Exception as e:
-            logger.error(f"❌ Error in enhanced button_callback: {e}")
-            await query.edit_message_text("⚠️ Arre yaar, kuch gadbad ho gayi! 🙏")
+            logger.error(f"Error in enhanced button_callback: {e}")
+            await query.edit_message_text("Arre yaar, kuch gadbad ho gayi!")
 
     async def _handle_category_selection(self, query, callback_data: str, user_info: dict, language: str):
         """Handle category selection callbacks with desi style"""
@@ -414,42 +415,42 @@ From studies to life advice, expert in every field!
         
         category_info = {
             "education": {
-                "title": "🎓 Padhai & Education Zone",
+                "title": "Padhai & Education Zone",
                 "description": "School, college, competitive exams, homework - sab help milegi!",
                 "examples": ["Math problems solve karo", "UPSC strategy batao", "Physics concepts explain karo"]
             },
             "career": {
-                "title": "💼 Career & Job Guidance",
+                "title": "Career & Job Guidance",
                 "description": "Job search, interview prep, resume writing, career planning",
                 "examples": ["Interview tips do", "Resume improve karo", "Career change advice do"]
             },
             "tech": {
-                "title": "💻 Technology & Programming Hub",
+                "title": "Technology & Programming Hub",
                 "description": "Coding, web development, AI/ML, tech troubleshooting",
                 "examples": ["Python code sikhao", "Website banane ka tareeka", "Bot development guide"]
             },
             "earning": {
-                "title": "💰 Online Earning & Business",
+                "title": "Online Earning & Business",
                 "description": "Freelancing, business ideas, investment, money making tips",
                 "examples": ["Online paise kaise kamaye", "Business plan banao", "Investment advice do"]
             },
             "love": {
-                "title": "❤️ Love & Relationships",
+                "title": "Love & Relationships",
                 "description": "Dating advice, relationship problems, love guidance",
                 "examples": ["Propose kaise kare", "Breakup se kaise deal kare", "Relationship tips do"]
             },
             "language": {
-                "title": "🗣️ Language Learning Center",
+                "title": "Language Learning Center",
                 "description": "English speaking, Hindi grammar, translation help",
                 "examples": ["English fluency improve karo", "Grammar mistakes correct karo", "Translation help karo"]
             },
             "fun": {
-                "title": "🎬 Entertainment & Fun Zone",
+                "title": "Entertainment & Fun Zone",
                 "description": "Movies, music, memes, jokes, timepass content",
                 "examples": ["Funny jokes sunao", "Movie recommend karo", "Memes banao"]
             },
             "motivation": {
-                "title": "💪 Motivation & Life Coaching",
+                "title": "Motivation & Life Coaching",
                 "description": "Success mindset, goal setting, confidence building",
                 "examples": ["Motivation boost karo", "Goals set karne help karo", "Confidence badhao"]
             }
@@ -459,19 +460,19 @@ From studies to life advice, expert in every field!
         
         message = f"""**{info['title']}**
 
-📋 **Main kya help kar sakta hoon:**
+**Main kya help kar sakta hoon:**
 {info['description']}
 
-💡 **Example questions:**
-• {info['examples'][0]}
-• {info['examples'][1]}
-• {info['examples'][2]}
+**Example questions:**
+* {info['examples'][0]}
+* {info['examples'][1]}
+* {info['examples'][2]}
 
-💬 **Bas apna sawal type karo aur main expert guidance dunga! 🎯**"""
+**Bas apna sawal type karo aur main expert guidance dunga!**"""
         
         keyboard = [
-            [InlineKeyboardButton("💬 Ask Question", callback_data="new_question")],
-            [InlineKeyboardButton("◀️ Back to Main Menu", callback_data="main_menu")]
+            [InlineKeyboardButton("Ask Question", callback_data="new_question")],
+            [InlineKeyboardButton("Back to Main Menu", callback_data="main_menu")]
         ]
         
         await query.edit_message_text(
@@ -483,27 +484,27 @@ From studies to life advice, expert in every field!
     async def _handle_admin_panel(self, query, user_info: dict, language: str):
         """Handle admin panel - only for admin users"""
         if not self.utils.is_admin(user_info['id']):
-            await query.edit_message_text("🚫 Admin access required bhai! 😅")
+            await query.edit_message_text("Admin access required bhai!")
             return
         
-        admin_message = f"""👨‍💻 **Admin Panel - Ostaad AI**
+        admin_message = f"""**Admin Panel - Ostaad AI**
 
-🎯 **System Status**: Online & Active
-📊 **Bot Version**: {Config.VERSION}
-🧠 **AI Model**: {Config.DEFAULT_MODEL}
+**System Status**: Online & Active
+**Bot Version**: {Config.VERSION}
+**AI Model**: {Config.DEFAULT_MODEL}
 
 **Available Admin Functions:**"""
         
         keyboard = [
             [
-                InlineKeyboardButton("📢 Broadcast Message", callback_data="broadcast"),
-                InlineKeyboardButton("📊 Bot Statistics", callback_data="admin_stats")
+                InlineKeyboardButton("Broadcast Message", callback_data="broadcast"),
+                InlineKeyboardButton("Bot Statistics", callback_data="admin_stats")
             ],
             [
-                InlineKeyboardButton("👥 User Management", callback_data="user_management"),
-                InlineKeyboardButton("⚙️ System Settings", callback_data="system_settings")
+                InlineKeyboardButton("User Management", callback_data="user_management"),
+                InlineKeyboardButton("System Settings", callback_data="system_settings")
             ],
-            [InlineKeyboardButton("◀️ Back to Main Menu", callback_data="main_menu")]
+            [InlineKeyboardButton("Back to Main Menu", callback_data="main_menu")]
         ]
         
         await query.edit_message_text(
@@ -515,24 +516,24 @@ From studies to life advice, expert in every field!
     async def _handle_broadcast_menu(self, query, user_info: dict, language: str):
         """Handle broadcast menu - only for admin"""
         if not self.utils.is_admin(user_info['id']):
-            await query.edit_message_text("🚫 Admin access required! 😅")
+            await query.edit_message_text("Admin access required!")
             return
         
-        broadcast_message = """📢 **Broadcast Message System**
+        broadcast_message = """**Broadcast Message System**
 
-🎯 **Instructions:**
+**Instructions:**
 1. Use `/broadcast <your_message>` command to send message to all users
 2. Message will be sent to all active users
 3. Use responsibly - avoid spam
 
 **Example:**
-`/broadcast 🎉 Ostaad AI has new features! Check them out!`
+`/broadcast Ostaad AI has new features! Check them out!`
 
-⚠️ **Note**: This feature is under development"""
+**Note**: This feature is under development"""
         
         keyboard = [
-            [InlineKeyboardButton("◀️ Back to Admin Panel", callback_data="admin_panel")],
-            [InlineKeyboardButton("🏠 Main Menu", callback_data="main_menu")]
+            [InlineKeyboardButton("Back to Admin Panel", callback_data="admin_panel")],
+            [InlineKeyboardButton("Main Menu", callback_data="main_menu")]
         ]
         
         await query.edit_message_text(
@@ -547,29 +548,29 @@ From studies to life advice, expert in every field!
         session = self.user_sessions.get(user_id, {})
         ai_stats = self.ai_service.get_user_stats(user_id)
         
-        stats_message = f"""📊 **Tumhara Ostaad AI Journey**
+        stats_message = f"""**Tumhara Ostaad AI Journey**
 
-👤 **User**: {user_info['first_name']} (@{user_info['username']})
+**User**: {user_info['first_name']} (@{user_info['username']})
 
-📈 **Session Stats:**
-• Sawal Pooche: {session.get('query_count', 0)} 🤔
-• Categories Explore Kiye: {len(session.get('categories_explored', set()))} 🎯
-• Current Mood: {ai_stats.get('current_mood', 'Neutral').title()} 😊
+**Session Stats:**
+* Sawal Pooche: {session.get('query_count', 0)}
+* Categories Explore Kiye: {len(session.get('categories_explored', set()))}
+* Current Mood: {ai_stats.get('current_mood', 'Neutral').title()}
 
-🎯 **Explore Kiye Categories:**
+**Explore Kiye Categories:**
 {', '.join(session.get('categories_explored', {'General'})) or 'Abhi koi nahi'}
 
-💬 **Total Conversations**: {ai_stats.get('conversation_count', 0)}
+**Total Conversations**: {ai_stats.get('conversation_count', 0)}
 
-🌟 **Tumhara Learning Journey**: Different categories explore karte raho aur expert bano! 💪
+**Tumhara Learning Journey**: Different categories explore karte raho aur expert bano!
 
-🔥 **Ostaad AI Tip**: Curiosity rakho aur har din kuch naya seekho! ✨
+**Ostaad AI Tip**: Curiosity rakho aur har din kuch naya seekho!
 
 {Config.POWERED_BY}"""
         
         keyboard = [
-            [InlineKeyboardButton("🔄 Reset Stats", callback_data="reset_stats")],
-            [InlineKeyboardButton("◀️ Back to Main Menu", callback_data="main_menu")]
+            [InlineKeyboardButton("Reset Stats", callback_data="reset_stats")],
+            [InlineKeyboardButton("Back to Main Menu", callback_data="main_menu")]
         ]
         
         await query.edit_message_text(
@@ -580,24 +581,24 @@ From studies to life advice, expert in every field!
 
     async def _handle_new_question(self, query, user_info: dict, language: str):
         """Handle new question selection with desi style"""
-        message = f"""💬 **Naya Sawal Poochne Ke Liye Ready!**
+        message = f"""**Naya Sawal Poochne Ke Liye Ready!**
 
-🎯 **Main har category mein expert hoon:**
-• 🎓 Padhai & Competitive Exams
-• 💼 Career & Job Guidance  
-• 💻 Technology & Programming
-• 💰 Online Earning & Business
-• ❤️ Love & Relationships
-• 🗣️ Language Learning
-• 🎬 Entertainment & Fun
-• 💪 Motivation & Life Coaching
+**Main har category mein expert hoon:**
+* Padhai & Competitive Exams
+* Career & Job Guidance  
+* Technology & Programming
+* Online Earning & Business
+* Love & Relationships
+* Language Learning
+* Entertainment & Fun
+* Motivation & Life Coaching
 
-**Bas apna sawal type karo aur main expert guidance dunga! 🔥**
+**Bas apna sawal type karo aur main expert guidance dunga!**
 
-Tension mat lo - Main tumhara digital ustad hoon! 🧑‍🏫"""
+Tension mat lo - Main tumhara digital ustad hoon!"""
         
         keyboard = [
-            [InlineKeyboardButton("◀️ Back to Main Menu", callback_data="main_menu")]
+            [InlineKeyboardButton("Back to Main Menu", callback_data="main_menu")]
         ]
         
         await query.edit_message_text(
@@ -610,27 +611,27 @@ Tension mat lo - Main tumhara digital ustad hoon! 🧑‍🏫"""
         """Handle quick action buttons with desi responses"""
         
         action_responses = {
-            "more_examples": "📚 Bilkul bhai! More detailed examples chahiye? Bas specific topic batao! 🎯",
-            "practice_questions": "🧮 Practice time! Koi bhi subject ka practice questions chahiye? Batao! 💪",
-            "interview_tips": "💼 Interview tips ready hain! Kaunsa type ka interview hai? Technical ya HR? 🎯",
-            "resume_help": "📄 Resume improve karna hai? Current resume share karo ya format chahiye? ✨",
-            "code_examples": "💻 Code examples ready! Kaunsi language aur kya problem solve karni hai? 🛠️",
-            "tech_resources": "🔗 Best tech resources batata hoon! Kaunsa technology seekhna hai? 🚀",
-            "earning_ideas": "💰 Paisa kamane ke ideas! Skills kya hain aur kitna time de sakte ho? 📊",
-            "business_tips": "📈 Business tips ready! Startup idea hai ya existing business improve karna hai? 💡",
-            "love_tips": "❤️ Love advice ready! Kya situation hai? Propose karna hai ya relationship improve? 🥰",
-            "relationship_advice": "🤗 Relationship guidance! Problem kya hai? Communication ya trust issues? 💕",
-            "more_fun": "🎬 More entertainment! Movies, music, ya jokes chahiye? Mood kya hai? 😄",
-            "jokes": "😂 Jokes ready hain! Kaunse type ke - funny, witty, ya roast style? 🤣",
-            "motivation_boost": "💪 Motivation boost time! Kya problem hai? Confidence low hai ya goals unclear? 🔥",
-            "goal_setting": "🎯 Goal setting expert! Short-term ya long-term goals set karne hain? ✨"
+            "more_examples": "Bilkul bhai! More detailed examples chahiye? Bas specific topic batao!",
+            "practice_questions": "Practice time! Koi bhi subject ka practice questions chahiye? Batao!",
+            "interview_tips": "Interview tips ready hain! Kaunsa type ka interview hai? Technical ya HR?",
+            "resume_help": "Resume improve karna hai? Current resume share karo ya format chahiye?",
+            "code_examples": "Code examples ready! Kaunsi language aur kya problem solve karni hai?",
+            "tech_resources": "Best tech resources batata hoon! Kaunsa technology seekhna hai?",
+            "earning_ideas": "Paisa kamane ke ideas! Skills kya hain aur kitna time de sakte ho?",
+            "business_tips": "Business tips ready! Startup idea hai ya existing business improve karna hai?",
+            "love_tips": "Love advice ready! Kya situation hai? Propose karna hai ya relationship improve?",
+            "relationship_advice": "Relationship guidance! Problem kya hai? Communication ya trust issues?",
+            "more_fun": "More entertainment! Movies, music, ya jokes chahiye? Mood kya hai?",
+            "jokes": "Jokes ready hain! Kaunse type ke - funny, witty, ya roast style?",
+            "motivation_boost": "Motivation boost time! Kya problem hai? Confidence low hai ya goals unclear?",
+            "goal_setting": "Goal setting expert! Short-term ya long-term goals set karne hain?"
         }
         
-        response = action_responses.get(action, "💬 Bas poocho bhai, main help karunga! 🤝")
+        response = action_responses.get(action, "Bas poocho bhai, main help karunga!")
         
         keyboard = [
-            [InlineKeyboardButton("💬 Ask Now", callback_data="new_question")],
-            [InlineKeyboardButton("◀️ Back to Main Menu", callback_data="main_menu")]
+            [InlineKeyboardButton("Ask Now", callback_data="new_question")],
+            [InlineKeyboardButton("Back to Main Menu", callback_data="main_menu")]
         ]
         
         await query.edit_message_text(
@@ -697,9 +698,9 @@ Tension mat lo - Main tumhara digital ustad hoon! 🧑‍🏫"""
         help_message = f"""**Ostaad AI Help Guide**
 
 **Kaise use kare:**
-• Koi bhi sawal type karo - main samjhaunga!
-• Categories select kar sakte ho quick help ke liye
-• Main Hinglish mein baat karta hoon - natural feel!
+* Koi bhi sawal type karo - main samjhaunga!
+* Categories select kar sakte ho quick help ke liye
+* Main Hinglish mein baat karta hoon - natural feel!
 
 **Available Commands:**
 /start - Welcome message aur main menu
@@ -713,16 +714,16 @@ Tension mat lo - Main tumhara digital ustad hoon! 🧑‍🏫"""
 3. Feedback do - main improve karta rehta hoon!
 
 **Technical Details:**
-• AI Model: {Config.DEFAULT_MODEL}
-• Developer: {Config.DEVELOPER}
-• Version: {Config.VERSION}
+* AI Model: {Config.DEFAULT_MODEL}
+* Developer: {Config.DEVELOPER}
+* Version: {Config.VERSION}
 
 **Status**: Fully Active aur Ready!
 
 {Config.POWERED_BY}"""
         
         keyboard = [
-            [InlineKeyboardButton("◀️ Back to Main Menu", callback_data="main_menu")]
+            [InlineKeyboardButton("Back to Main Menu", callback_data="main_menu")]
         ]
         
         await query.edit_message_text(
@@ -764,7 +765,7 @@ Last Updated: December 2024
 {Config.POWERED_BY}"""
         
         keyboard = [
-            [InlineKeyboardButton("◀️ Back to Main Menu", callback_data="main_menu")]
+            [InlineKeyboardButton("Back to Main Menu", callback_data="main_menu")]
         ]
         
         await query.edit_message_text(
@@ -782,10 +783,10 @@ Last Updated: December 2024
 Choose your preferred language:
 
 **Indian Languages:**
-• Hindi (हिंदी) - Default
-• English - International
-• Urdu (اردو) - Supported
-• Bengali (বাংলা) - Supported
+* Hindi (हिंदी) - Default
+* English - International
+* Urdu (اردو) - Supported
+* Bengali (বাংলা) - Supported
 
 **Note**: Main mainly Hinglish mein baat karta hoon - best of both worlds!
 
@@ -795,14 +796,14 @@ Aur languages bhi support karta hoon basic level pe.
         
         keyboard = [
             [
-                InlineKeyboardButton("🇮🇳 Hindi", callback_data="set_lang_hi"),
-                InlineKeyboardButton("🇬🇧 English", callback_data="set_lang_en")
+                InlineKeyboardButton("Hindi", callback_data="set_lang_hi"),
+                InlineKeyboardButton("English", callback_data="set_lang_en")
             ],
             [
-                InlineKeyboardButton("🇵🇰 Urdu", callback_data="set_lang_ur"),
-                InlineKeyboardButton("🇧🇩 Bengali", callback_data="set_lang_bn")
+                InlineKeyboardButton("Urdu", callback_data="set_lang_ur"),
+                InlineKeyboardButton("Bengali", callback_data="set_lang_bn")
             ],
-            [InlineKeyboardButton("◀️ Back to Main Menu", callback_data="main_menu")]
+            [InlineKeyboardButton("Back to Main Menu", callback_data="main_menu")]
         ]
         
         await query.edit_message_text(
@@ -823,8 +824,8 @@ Aur languages bhi support karta hoon basic level pe.
         error_msg = f"""{random.choice(error_messages)}
 
 **Kya karna hai:**
-• Thoda wait karo aur phir try karo 
-• Agar problem continue kare to developer ko batao
+* Thoda wait karo aur phir try karo 
+* Agar problem continue kare to developer ko batao
 
 **Meanwhile**: Main jaldi wapas aa jaunga tumhari help ke liye!
 
